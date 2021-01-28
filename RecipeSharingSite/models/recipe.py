@@ -6,7 +6,7 @@ class Recipe(db.Model):
     name = db.Column(db.String(100), nullable=False, unique=True)
     prep_time_minutes = db.Column(db.Integer)
     cook_time_minutes = db.Column(db.Integer)
-    steps = db.relationship("RecipeStep", backref="recipes", lazy="dynamic")
+    steps = db.relationship("RecipeStep", backref="recipes", lazy="dynamic", cascade="all,delete")
     # TODO (bbrady) - add ingredient list
 
     def __init__(self, name, prep_time_minutes, cook_time_minutes):
