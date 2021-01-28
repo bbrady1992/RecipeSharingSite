@@ -16,5 +16,3 @@ class Recipe(db.Model):
 
     def __repr__(self):
         return '<Recipe {}>'.format(self.name);
-
-db.create_all()

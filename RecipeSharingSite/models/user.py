@@ -14,5 +14,3 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.name);
-
-db.create_all()

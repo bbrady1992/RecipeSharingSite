@@ -3,7 +3,6 @@ from flask_api import status
 from RecipeSharingSite.models.user import User
 from RecipeSharingSite.models.recipe import Recipe
 from RecipeSharingSite import db
-import json
 
 API = Blueprint('API', __name__)
 

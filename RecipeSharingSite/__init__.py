@@ -8,5 +8,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 
 db = SQLAlchemy(app)
 
+"""
+All data models need to be imported before the db.create_all() call. Add them here
+"""
+from RecipeSharingSite.models.recipe import Recipe
+from RecipeSharingSite.models.user import User
+db.create_all()
+
 from RecipeSharingSite.API.API import API as API_BP
 app.register_blueprint(API_BP)
