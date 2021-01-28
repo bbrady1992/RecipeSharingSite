@@ -11,9 +11,12 @@ db = SQLAlchemy(app)
 """
 All data models need to be imported before the db.create_all() call. Add them here
 """
+from RecipeSharingSite.models.comment import Comment
+from RecipeSharingSite.models.ingredient import Ingredient
 from RecipeSharingSite.models.recipe import Recipe
-from RecipeSharingSite.models.recipe import RecipeStep
+from RecipeSharingSite.models.recipestep import RecipeStep
 from RecipeSharingSite.models.user import User
+from RecipeSharingSite.models.m2m_RecipeIngredient import RecipeIngredient
 db.create_all()
 
 from RecipeSharingSite.API.API import API as API_BP

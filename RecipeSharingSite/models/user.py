@@ -1,11 +1,12 @@
 from RecipeSharingSite import db
 
 class User(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(35), unique=True, nullable=False)
     name = db.Column(db.String(25), nullable=False)
     password = db.Column(db.String(64), nullable=False)
+    recipes = db.relationship("Recipe", backref="User", lazy="dynamic")
 
     def __init__(self, name, email, password):
         self.name = name
@@ -14,3 +15,11 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.name
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "recipes": [r.id for r in self.recipes]
+        }
