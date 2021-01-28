@@ -12,6 +12,7 @@ db = SQLAlchemy(app)
 All data models need to be imported before the db.create_all() call. Add them here
 """
 from RecipeSharingSite.models.recipe import Recipe
+from RecipeSharingSite.models.recipe import RecipeStep
 from RecipeSharingSite.models.user import User
 db.create_all()
 
