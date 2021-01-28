@@ -9,3 +9,9 @@ class Ingredient(db.Model):
 
     def __repr__(self):
         return '<Ingredient %r>' % self.name
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name
+        }

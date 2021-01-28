@@ -7,6 +7,7 @@ class User(db.Model):
     name = db.Column(db.String(25), nullable=False)
     password = db.Column(db.String(64), nullable=False)
     recipes = db.relationship("Recipe", backref="User", lazy="dynamic")
+    comments = db.relationship("Comment", backref="User", lazy="dynamic")
 
     def __init__(self, name, email, password):
         self.name = name
@@ -21,5 +22,6 @@ class User(db.Model):
             "id": self.id,
             "name": self.name,
             "email": self.email,
-            "recipes": [r.id for r in self.recipes]
+            "recipes": [r.id for r in self.recipes],
+            "comments": [c.id for c in self.comments]
         }
