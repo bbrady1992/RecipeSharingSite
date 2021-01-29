@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_api import status
+from RecipeSharingSite.controllers.user_controller import UserController
 
 API = Blueprint('API', __name__)
 
@@ -14,7 +15,8 @@ User API
 """
 @API.route('/users/')
 def get_all_users():
-    return endpoint_stub('/users/', request.method)
+    users = UserController.get_all_users()
+    return jsonify({"users": [u.serialize() for u in users]})
 
 
 @API.route('/users/', methods=['POST'])

@@ -15,11 +15,10 @@ def client():
 
     os.close(db_fd)
 
-def test_GET_users(client):
+"""
+GET /users/
+"""
+def test_get_users(client):
     rv = client.get('/users/')
-    assert b'GET /users/ (())' in rv.data
-
-def test_GET_user_information(client):
-    rv = client.get('/users/testuser/')
-    assert b"GET /users/<user_name> (('testuser',))" in rv.data
+    assert rv.get_json() == {"users": []}
 
