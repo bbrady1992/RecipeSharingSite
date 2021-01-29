@@ -2,11 +2,10 @@ Users:
     * /users
         * GET: Return list of all users
         * POST:  Add user
-    * /users/{user_id}
+    * /users/{user_name}
         * GET: Get information about specific user, including submitted recipes and comments
         * PUT: Update user information
         * DELETE: Delete user
-    * /users/{user_id}
 
 
 Recipes:
