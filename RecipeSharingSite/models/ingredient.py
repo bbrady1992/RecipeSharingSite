@@ -8,9 +8,6 @@ class Ingredient(db.Model):
     name = db.Column(db.String, nullable=False, unique=True)
     recipes = db.relationship('Recipe', secondary='RecipeIngredient')
 
-    def __init__(self, name):
-        self.name = name
-
     def __repr__(self):
         return '<Ingredient %r>' % self.name
 

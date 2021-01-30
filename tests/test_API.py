@@ -30,36 +30,55 @@ def populated_db_client():
     app = create_app('sqlite+pysqlite:///' + db_uri)
     app.config['TESTING'] = True
 
-    user1 = User()
-    user1.name = "Test User 1"
-    user1.email = "testuser1@gmail.com"
-    user1.password = "testpasswordhash"
+    user1 = User(name="Test User 1", email="testuser1@gmail.com", password="tu3passwordhash")
+    user2 = User(name="Test User 2", email="TU2@gmail.com", password="tu2passwordhash")
+    user3 = User(name="Test User 3", email="TestUser3@gmail.com", password="tu3passwordhash")
 
-    recipe1 = Recipe()
-    recipe1.user = user1
-    recipe1.name = "Test Recipe 1"
-    recipe1.prep_time_minutes = 10
-    recipe1.cook_time_minutes = 25
-    recipe1.steps.append(RecipeStep(1, "Take out the ingredients"))
-    recipe1.steps.append(RecipeStep(2, "Cook the ingredients"))
-    ingredient1 = Ingredient("Canned tomatoes")
-    recipe1_ingredient1 = RecipeIngredient(recipe=recipe1, ingredient=ingredient1, amount=1, units="can")
+    """
+    Recipe 1
+    """
+    recipe1 = Recipe(user=user1, name="Test Recipe 1", prep_time_minutes=10, cook_time_minutes=25)
+    recipe1.steps.extend([
+        RecipeStep(number=1, content="Take out the ingredients"),
+        RecipeStep(number=2, content="Cook the ingredients"),
+        RecipeStep(number=3, content="Eat the meal")])
+    recipe1.ingredient_assoc.extend([
+        RecipeIngredient(ingredient=Ingredient(name="Canned tomatoes"), amount=1, units="can"),
+        RecipeIngredient(ingredient=Ingredient(name="Cumin powder"), amount=2, units="Tbsp")])
+    recipe1.comments.extend([
+        Comment(user=user2, content="This is gross"),
+        Comment(user=user1, content="That's just, like, your opinion, man"),
+        Comment(user=user3, content="Simmer dean")])
 
-    recipe2 = Recipe()
-    recipe2.user = user1
-    recipe2.name = "Test Recipe 2"
-    recipe2.prep_time_minutes = 20
-    recipe2.cook_time_minutes = 50
-    recipe2.steps.append(RecipeStep(1, "Remove pre-cooked meal"))
-    recipe2.steps.append(RecipeStep(2, "Eat it"))
+    """
+    Recipe 2
+    """
+    recipe2 = Recipe(user=user2, name="Test Recipe 2", prep_time_minutes=25, cook_time_minutes=50)
+    recipe2.steps.extend([
+        RecipeStep(number=1, content="Thaw meat"),
+        RecipeStep(number=2, content="Season meat"),
+        RecipeStep(number=3, content="Cook meat"),
+        RecipeStep(number=4, content="Let sit for 5 minutes, then serve")])
+    recipe2.ingredient_assoc.extend([
+        RecipeIngredient(ingredient=Ingredient(name="Ribeye"), amount=14, units="oz"),
+        RecipeIngredient(ingredient=Ingredient(name="Salt"), amount=1, units="Tsp"),
+        RecipeIngredient(ingredient=Ingredient(name="Pepper"), amount=1.5, units="Tsp")
+    ])
+    recipe2.comments.extend([
+        Comment(user=user2, content="Now this is a meal"),
+        Comment(user=user3, content="He might have you beat @user1"),
+        Comment(user=user1, content="Okay, this IS better")
+    ])
 
     with app.app_context():
         db.session.add(user1)
+        db.session.add(user2)
+        db.session.add(user3)
         db.session.add(recipe1)
-        db.session.add(recipe1_ingredient1)
         db.session.add(recipe2)
-
+        #db.session.bulk_save_objects([user1, user2, user3, recipe1, recipe2])
         db.session.commit()
+
     with app.test_client() as populated_db_client:
         yield populated_db_client
 
@@ -81,12 +100,22 @@ def test_get_users_when_nonempty(populated_db_client):
     json_data = rv.get_json()
     print("JSON data for test_get_users_when_nonempty: '{}'".format(json_data))
     assert len(json_data) == 1
-    assert len(json_data["users"]) == 1
-    user = json_data["users"][0]
-    print("User data is: '{}'".format(user))
-    assert user["name"] == "Test User 1"
-    assert user["email"] == "testuser1@gmail.com"
-    assert "password" not in user.keys()
+    assert len(json_data["users"]) == 3
+
+    user1 = json_data["users"][0]
+    assert user1["name"] == "Test User 1"
+    assert user1["email"] == "testuser1@gmail.com"
+    assert "password" not in user1.keys()
+
+    user2 = json_data["users"][1]
+    assert user2["name"] == "Test User 2"
+    assert user2["email"] == "TU2@gmail.com"
+    assert "password" not in user2.keys()
+
+    user3 = json_data["users"][2]
+    assert user3["name"] == "Test User 3"
+    assert user3["email"] == "TestUser3@gmail.com"
+    assert "password" not in user3.keys()
 
 def test_recipes_when_empty(empty_db_client):
     rv = empty_db_client.get('/recipes/')
@@ -98,7 +127,79 @@ def test_recipes_when_nonempty(populated_db_client):
     rv = populated_db_client.get('/recipes/')
     json_data = rv.get_json()
     print("JSON data for test_recipes_when_nonempty: '{}'".format(json_data))
-    assert len(json_data) == 2
+    assert len(json_data) == 1
+    recipes = json_data["recipes"]
+    assert len(recipes) == 2
+
+    """
+    Recipe 1
+    """
+    recipe1 = recipes[0]
+    assert recipe1["name"] == "Test Recipe 1"
+    assert recipe1["prep_time_minutes"] == 10
+    assert recipe1["cook_time_minutes"] == 25
+
+    assert len(recipe1["steps"]) == 3
+    assert recipe1["steps"][0]["number"] == 1
+    assert recipe1["steps"][0]["content"] == "Take out the ingredients"
+    assert recipe1["steps"][1]["number"] == 2
+    assert recipe1["steps"][1]["content"] == "Cook the ingredients"
+    assert recipe1["steps"][2]["number"] == 3
+    assert recipe1["steps"][2]["content"] == "Eat the meal"
+
+    assert len(recipe1["ingredients"]) == 2
+    assert recipe1["ingredients"][0]["ingredient"] == "Canned tomatoes"
+    assert recipe1["ingredients"][0]["amount"] == 1
+    assert recipe1["ingredients"][0]["units"] == "can"
+    assert recipe1["ingredients"][1]["ingredient"] == "Cumin powder"
+    assert recipe1["ingredients"][1]["amount"] == 2
+    assert recipe1["ingredients"][1]["units"] == "Tbsp"
+
+    assert len(recipe1["comments"]) == 3
+    assert recipe1["comments"][0]["user"] == "Test User 2"
+    assert recipe1["comments"][0]["content"] == "This is gross"
+    assert recipe1["comments"][1]["user"] == "Test User 1"
+    assert recipe1["comments"][1]["content"] == "That's just, like, your opinion, man"
+    assert recipe1["comments"][2]["user"] == "Test User 3"
+    assert recipe1["comments"][2]["content"] == "Simmer dean"
+
+    """
+    Recipe 2
+    """
+    recipe2 = recipes[1]
+    assert recipe2["name"] == "Test Recipe 2"
+    assert recipe2["prep_time_minutes"] == 25
+    assert recipe2["cook_time_minutes"] == 50
+
+    assert len(recipe2["steps"]) == 4
+    assert recipe2["steps"][0]["number"] == 1
+    assert recipe2["steps"][0]["content"] == "Thaw meat"
+    assert recipe2["steps"][1]["number"] == 2
+    assert recipe2["steps"][1]["content"] == "Season meat"
+    assert recipe2["steps"][2]["number"] == 3
+    assert recipe2["steps"][2]["content"] == "Cook meat"
+    assert recipe2["steps"][3]["number"] == 4
+    assert recipe2["steps"][3]["content"] == "Let sit for 5 minutes, then serve"
+
+    assert len(recipe2["ingredients"]) == 3
+    assert recipe2["ingredients"][0]["ingredient"] == "Ribeye"
+    assert recipe2["ingredients"][0]["amount"] == 14
+    assert recipe2["ingredients"][0]["units"] == "oz"
+    assert recipe2["ingredients"][1]["ingredient"] == "Salt"
+    assert recipe2["ingredients"][1]["amount"] == 1
+    assert recipe2["ingredients"][1]["units"] == "Tsp"
+    assert recipe2["ingredients"][2]["ingredient"] == "Pepper"
+    assert recipe2["ingredients"][2]["amount"] == 1.5
+    assert recipe2["ingredients"][2]["units"] == "Tsp"
+
+    assert len(recipe2["comments"]) == 3
+    assert recipe2["comments"][0]["user"] == "Test User 2"
+    assert recipe2["comments"][0]["content"] == "Now this is a meal"
+    assert recipe2["comments"][1]["user"] == "Test User 3"
+    assert recipe2["comments"][1]["content"] == "He might have you beat @user1"
+    assert recipe2["comments"][2]["user"] == "Test User 1"
+    assert recipe2["comments"][2]["content"] == "Okay, this IS better"
+
 
 
 

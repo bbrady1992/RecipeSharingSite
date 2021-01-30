@@ -9,11 +9,6 @@ class RecipeStep(db.Model):
     recipe_id = db.Column(db.Integer, db.ForeignKey('Recipe.id'))
     recipe = db.relationship('Recipe')
 
-    def __init__(self, number, content):
-        self.number = number
-        self.content = content
-
-
     def __repr__(self):
         return '<Step %r>' % self.number
 

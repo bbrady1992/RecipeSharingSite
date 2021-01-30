@@ -13,8 +13,6 @@ class Recipe(db.Model):
     steps = db.relationship("RecipeStep", backref="Recipe", lazy="dynamic", cascade="all,delete")
     comments = db.relationship("Comment", backref="Recipe", lazy="dynamic", cascade="all,delete")
 
-
-
     def __repr__(self):
         return '<Recipe %r>' % self.name
 
@@ -25,9 +23,9 @@ class Recipe(db.Model):
             "prep_time_minutes": self.prep_time_minutes,
             "cook_time_minutes": self.cook_time_minutes,
             "user_id": self.user_id,
-            # TODO (bbrady) - fix ingredient serialization after m2m relatinoship
             "ingredients": [ri.serialize() for ri in self.ingredient_assoc],
-            "steps": [item.serialize() for item in self.steps]
+            "steps": [s.serialize() for s in self.steps],
+            "comments": [{"id": c.id, "user": c.user.name, "content": c.content} for c in self.comments]
         }
 
 
