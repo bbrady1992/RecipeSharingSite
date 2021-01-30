@@ -18,6 +18,12 @@ pre code {
   word-wrap: normal;
   white-space: pre;
 }
+hr {
+  border: none;
+  height: .25em;
+  width: 910px;
+  background-color: #e1e4e8
+}
 </style>
 
 ```{r setup, include=FALSE}
@@ -34,6 +40,100 @@ options(height=400)
 GET /users/
 ```
 
+
+#### Parameters
+
+None
+
+#### Default Response
+
+```{js}
+Status: 200 OK
+```
+
+```{js}
+{
+   "users":[
+      {
+         "comments":[
+            2,
+            6
+         ],
+         "email":"testuser1@gmail.com",
+         "id":1,
+         "name":"Test User 1",
+         "recipes":[
+            1
+         ]
+      },
+      {
+         "comments":[
+            1,
+            4
+         ],
+         "email":"TU2@gmail.com",
+         "id":2,
+         "name":"Test User 2",
+         "recipes":[
+            2
+         ]
+      },
+   ]
+}
+```
+
+---
+
+## Add user
+
+```{js}
+POST /users/
+```
+
+## Get comments made by user
+
+```{js}
+GET /users/{user_id}/comments
+```
+
+#### Parameters
+
+| Name    | Type | In   | Description |
+|---------|------|------|-------------|
+| user_id | int  | path |             |
+
+#### Default Response
+
+```{js}
+Status: 200 OK
+```
+
+```{js}
+{
+   "user_id": 3,
+   "total_comments": 1,
+   "comments": [
+      {
+         "id": 3,
+         "recipe_id": 1,
+         "content": "Simmer dean"
+      }
+   ]
+}
+```
+
+
+
+## Get recipes submitted by user
+
+
+# Recipes
+
+## Get list of recipes
+
+```{js}
+GET /recipes/
+```
 
 #### Parameters
 
@@ -103,13 +203,30 @@ Status: 200 OK
 ```
 
 
+# Comments
+
+## Get all comments
+
+## Post comment on recipe
+
+## Get specific comment
+
+## Update comment
+
+## Delete comment
+
+## Get comments for recipe
+
+
+
+
 ```
 Users:
     * /users
         * GET: Return list of all users
         * POST:  Add user
     * /users/{user_name}
-        * GET: Get information about specific user, including submitted recipes and comments ssssssssssssssssssssaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbb
+        * GET: Get information about specific user, including submitted recipes and comments
         * PUT: Update user information
         * DELETE: Delete user
 
@@ -132,10 +249,10 @@ Ingredients:
 
 
 Comments:
-    * /comment
+    * /comments
         * GET: Return list of all comments
         * POST: Add comment (supply user ID and recipe ID)
-    * /comment/{comment_id}
+    * /comments/{comment_id}
         * GET: Get comment
         * PUT: Update comment
         * DELETE: Delete comment

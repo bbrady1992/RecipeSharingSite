@@ -2,6 +2,9 @@ import os
 import tempfile
 
 import pytest
+from flask_api import status
+
+from pprint import pprint
 
 from RecipeSharingSite import create_app, db
 
@@ -76,7 +79,6 @@ def populated_db_client():
         db.session.add(user3)
         db.session.add(recipe1)
         db.session.add(recipe2)
-        #db.session.bulk_save_objects([user1, user2, user3, recipe1, recipe2])
         db.session.commit()
 
     with app.test_client() as populated_db_client:
@@ -91,12 +93,14 @@ GET /users/
 """
 def test_get_users_when_empty(empty_db_client):
     rv = empty_db_client.get('/users/')
+    assert rv.status_code == 200
     json_data = rv.get_json()
     assert len(json_data) == 1
     assert json_data["users"] == []
 
 def test_get_users_when_nonempty(populated_db_client):
     rv = populated_db_client.get('/users/')
+    assert rv.status_code == 200
     json_data = rv.get_json()
     print("JSON data for test_get_users_when_nonempty: '{}'".format(json_data))
     assert len(json_data) == 1
@@ -106,25 +110,37 @@ def test_get_users_when_nonempty(populated_db_client):
     assert user1["name"] == "Test User 1"
     assert user1["email"] == "testuser1@gmail.com"
     assert "password" not in user1.keys()
+    assert user1["recipes"] == [1]
+    assert user1["comments"] == [2, 6]
 
     user2 = json_data["users"][1]
     assert user2["name"] == "Test User 2"
     assert user2["email"] == "TU2@gmail.com"
     assert "password" not in user2.keys()
+    assert user2["recipes"] == [2]
+    assert user2["comments"] == [1, 4]
 
     user3 = json_data["users"][2]
     assert user3["name"] == "Test User 3"
     assert user3["email"] == "TestUser3@gmail.com"
     assert "password" not in user3.keys()
+    assert user3["recipes"] == []
+    assert user3["comments"] == [3, 5]
 
+
+"""
+GET /recipes/
+"""
 def test_recipes_when_empty(empty_db_client):
     rv = empty_db_client.get('/recipes/')
+    assert rv.status_code == 200
     json_data = rv.get_json()
     assert len(json_data) == 1
     assert json_data["recipes"] == []
 
 def test_recipes_when_nonempty(populated_db_client):
     rv = populated_db_client.get('/recipes/')
+    assert rv.status_code == 200
     json_data = rv.get_json()
     print("JSON data for test_recipes_when_nonempty: '{}'".format(json_data))
     assert len(json_data) == 1
@@ -202,4 +218,31 @@ def test_recipes_when_nonempty(populated_db_client):
 
 
 
+"""
+Comments
+"""
+
+def test_get_comments_for_existing_user(populated_db_client):
+    rv = populated_db_client.get('/users/3/comments/')
+    assert rv.status_code == 200
+    json_data = rv.get_json()
+    print("test_get_comments_for_existing_user: {}".format(json_data))
+    assert len(json_data) == 3
+    assert json_data["user_id"] == "3"
+    assert json_data["total_comments"] == len(json_data["comments"]) == 2
+
+    comment1 = json_data["comments"][0]
+    assert comment1["id"] == 3
+    assert comment1["recipe_id"] == 1
+    assert comment1["content"] == "Simmer dean"
+
+    comment2 = json_data["comments"][1]
+    assert comment2["id"] == 5
+    assert comment2["recipe_id"] == 2
+    assert comment2["content"] == "He might have you beat @user1"
+
+def test_get_comments_for_nonexistent_user(empty_db_client):
+    rv = empty_db_client.get('/users/1/comments/')
+    assert rv.status_code == 404
+    assert rv.get_data() == b"User 1 not found"
 

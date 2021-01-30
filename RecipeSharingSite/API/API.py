@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_api import status
 from RecipeSharingSite.controllers.user_controller import UserController
 from RecipeSharingSite.controllers.recipe_controller import RecipeController
+from RecipeSharingSite.controllers.comment_controller import CommentController
 
 API = Blueprint('API', __name__)
 
@@ -39,6 +40,13 @@ def update_user_information(user_name):
 def delete_user(user_name):
     return endpoint_stub('/users/<user_name>', request.method, user_name)
 
+@API.route('/users/<user_name>/comments/')
+def get_comments_for_user(user_name):
+    results = CommentController.get_comments_for_user(user_name)
+    if results is None:
+        return "User {} not found".format(user_name), status.HTTP_404_NOT_FOUND
+    return jsonify(results), status.HTTP_200_OK
+
 
 """
 Recipes API
@@ -46,7 +54,7 @@ Recipes API
 @API.route('/recipes/')
 def get_all_recipes():
     recipes = RecipeController.get_all_recipes()
-    return jsonify({"recipes": [r.serialize() for r in recipes]})
+    return jsonify({"recipes": [r.serialize() for r in recipes]}), status.HTTP_200_OK
 
 @API.route('/recipes/<recipe_id>/')
 def get_recipe(recipe_id):
