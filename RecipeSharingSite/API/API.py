@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_api import status
 from RecipeSharingSite.controllers.user_controller import UserController
+from RecipeSharingSite.controllers.recipe_controller import RecipeController
 
 API = Blueprint('API', __name__)
 
@@ -44,7 +45,8 @@ Recipes API
 """
 @API.route('/recipes/')
 def get_all_recipes():
-    return endpoint_stub('/recipes/', request.method)
+    recipes = RecipeController.get_all_recipes()
+    return jsonify({"recipes": [r.serialize() for r in recipes]})
 
 @API.route('/recipes/<recipe_id>/')
 def get_recipe(recipe_id):

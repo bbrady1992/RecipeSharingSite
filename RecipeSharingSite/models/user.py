@@ -9,11 +9,6 @@ class User(db.Model):
     recipes = db.relationship("Recipe", backref="User", lazy="dynamic")
     comments = db.relationship("Comment", backref="User", lazy="dynamic")
 
-    def __init__(self, name, email, password):
-        self.name = name
-        self.email = email
-        self.password = password
-
     def __repr__(self):
         return '<User %r>' % self.name
 
