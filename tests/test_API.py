@@ -75,7 +75,12 @@ def populated_db_client():
     """
     Recipe 2
     """
-    recipe2 = Recipe(user=user2, name="Test Recipe 2", prep_time_minutes=25, cook_time_minutes=50, submitted_on=date(2021, 1, 20))
+    recipe2 = Recipe(
+        user=user2,
+        name="Test Recipe 2",
+        prep_time_minutes=25,
+        cook_time_minutes=50,
+        submitted_on=date(2021, 1, 21))
     recipe2.steps.extend([
         RecipeStep(number=1, content="Thaw meat"),
         RecipeStep(number=2, content="Season meat"),
@@ -176,6 +181,7 @@ def test_recipes_when_nonempty(populated_db_client):
     assert recipe1["name"] == "Test Recipe 1"
     assert recipe1["prep_time_minutes"] == 10
     assert recipe1["cook_time_minutes"] == 25
+    assert recipe1["submitted_on"] == "2021-01-20"
 
     assert len(recipe1["steps"]) == 3
     assert recipe1["steps"][0]["number"] == 1
@@ -208,6 +214,7 @@ def test_recipes_when_nonempty(populated_db_client):
     assert recipe2["name"] == "Test Recipe 2"
     assert recipe2["prep_time_minutes"] == 25
     assert recipe2["cook_time_minutes"] == 50
+    assert recipe2["submitted_on"] == "2021-01-21"
 
     assert len(recipe2["steps"]) == 4
     assert recipe2["steps"][0]["number"] == 1

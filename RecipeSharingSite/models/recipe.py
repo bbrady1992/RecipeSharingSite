@@ -25,7 +25,8 @@ class Recipe(db.Model):
             "user_id": self.user_id,
             "ingredients": [ri.serialize() for ri in self.ingredient_assoc],
             "steps": [s.serialize() for s in self.steps],
-            "comments": [{"id": c.id, "user": c.user.name, "content": c.content} for c in self.comments]
+            "comments": [{"id": c.id, "user": c.user.name, "content": c.content} for c in self.comments],
+            "submitted_on": self.submitted_on.isoformat()
         }
 
 

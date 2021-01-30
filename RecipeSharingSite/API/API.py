@@ -54,7 +54,7 @@ Recipes API
 @API.route('/recipes/')
 def get_all_recipes():
     recipes = RecipeController.get_all_recipes()
-    return jsonify({"recipes": [r.serialize() for r in recipes]}), status.HTTP_200_OK
+    return jsonify(recipes), status.HTTP_200_OK
 
 @API.route('/recipes/<recipe_id>/')
 def get_recipe(recipe_id):
