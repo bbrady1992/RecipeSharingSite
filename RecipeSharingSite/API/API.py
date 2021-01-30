@@ -18,7 +18,7 @@ User API
 @API.route('/users/')
 def get_all_users():
     users = UserController.get_all_users()
-    return jsonify({"users": [u.serialize() for u in users]})
+    return jsonify(users)
 
 
 @API.route('/users/', methods=['POST'])

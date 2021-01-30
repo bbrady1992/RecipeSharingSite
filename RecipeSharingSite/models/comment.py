@@ -5,6 +5,7 @@ class Comment(db.Model):
     __tablename__ = 'Comment'
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String, nullable=False)
+    submitted_on = db.Column(db.DateTime, nullable=False)
 
     # Made on a recipe
     recipe_id = db.Column(db.Integer, db.ForeignKey('Recipe.id'))

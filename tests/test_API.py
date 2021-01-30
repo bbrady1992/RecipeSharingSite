@@ -1,5 +1,7 @@
 import os
 import tempfile
+from datetime import date, datetime
+import pytz
 
 import pytest
 from flask_api import status
@@ -33,14 +35,31 @@ def populated_db_client():
     app = create_app('sqlite+pysqlite:///' + db_uri)
     app.config['TESTING'] = True
 
-    user1 = User(name="Test User 1", email="testuser1@gmail.com", password="tu3passwordhash")
-    user2 = User(name="Test User 2", email="TU2@gmail.com", password="tu2passwordhash")
-    user3 = User(name="Test User 3", email="TestUser3@gmail.com", password="tu3passwordhash")
+    user1 = User(
+        name="Test User 1",
+        email="testuser1@gmail.com",
+        password="tu3passwordhash",
+        joined_on=date(2000, 6, 23))
+    user2 = User(
+        name="Test User 2",
+        email="TU2@gmail.com",
+        password="tu2passwordhash",
+        joined_on=date(1992, 10, 5))
+    user3 = User(
+        name="Test User 3",
+        email="TestUser3@gmail.com",
+        password="tu3passwordhash",
+        joined_on=date(2021, 1, 20))
 
     """
     Recipe 1
     """
-    recipe1 = Recipe(user=user1, name="Test Recipe 1", prep_time_minutes=10, cook_time_minutes=25)
+    recipe1 = Recipe(
+        user=user1,
+        name="Test Recipe 1",
+        prep_time_minutes=10,
+        cook_time_minutes=25,
+        submitted_on=date(2021, 1, 20))
     recipe1.steps.extend([
         RecipeStep(number=1, content="Take out the ingredients"),
         RecipeStep(number=2, content="Cook the ingredients"),
@@ -49,14 +68,14 @@ def populated_db_client():
         RecipeIngredient(ingredient=Ingredient(name="Canned tomatoes"), amount=1, units="can"),
         RecipeIngredient(ingredient=Ingredient(name="Cumin powder"), amount=2, units="Tbsp")])
     recipe1.comments.extend([
-        Comment(user=user2, content="This is gross"),
-        Comment(user=user1, content="That's just, like, your opinion, man"),
-        Comment(user=user3, content="Simmer dean")])
+        Comment(user=user2, content="This is gross", submitted_on=datetime(2021, 1, 20, 12, 0, 0, 0, pytz.UTC)),
+        Comment(user=user1, content="That's just, like, your opinion, man", submitted_on=datetime(2021, 1, 21, 16, 15, 0, 0, pytz.UTC)),
+        Comment(user=user3, content="Simmer dean", submitted_on=datetime(2021, 1, 22, 5, 30, 0, 0, pytz.UTC))])
 
     """
     Recipe 2
     """
-    recipe2 = Recipe(user=user2, name="Test Recipe 2", prep_time_minutes=25, cook_time_minutes=50)
+    recipe2 = Recipe(user=user2, name="Test Recipe 2", prep_time_minutes=25, cook_time_minutes=50, submitted_on=date(2021, 1, 20))
     recipe2.steps.extend([
         RecipeStep(number=1, content="Thaw meat"),
         RecipeStep(number=2, content="Season meat"),
@@ -68,9 +87,9 @@ def populated_db_client():
         RecipeIngredient(ingredient=Ingredient(name="Pepper"), amount=1.5, units="Tsp")
     ])
     recipe2.comments.extend([
-        Comment(user=user2, content="Now this is a meal"),
-        Comment(user=user3, content="He might have you beat @user1"),
-        Comment(user=user1, content="Okay, this IS better")
+        Comment(user=user2, content="Now this is a meal", submitted_on=datetime(2021, 1, 24, 4, 30, 0, 0, pytz.UTC)),
+        Comment(user=user3, content="He might have you beat @user1", submitted_on=datetime(2021, 1, 24, 8, 45, 0, 0, pytz.UTC)),
+        Comment(user=user1, content="Okay, this IS better", submitted_on=datetime(2021, 1, 24, 19, 10, 0, 0, pytz.UTC))
     ])
 
     with app.app_context():
@@ -112,6 +131,7 @@ def test_get_users_when_nonempty(populated_db_client):
     assert "password" not in user1.keys()
     assert user1["recipes"] == [1]
     assert user1["comments"] == [2, 6]
+    assert user1["joined_on"] == "2000-06-23"
 
     user2 = json_data["users"][1]
     assert user2["name"] == "Test User 2"
@@ -119,6 +139,7 @@ def test_get_users_when_nonempty(populated_db_client):
     assert "password" not in user2.keys()
     assert user2["recipes"] == [2]
     assert user2["comments"] == [1, 4]
+    assert user2["joined_on"] == "1992-10-05"
 
     user3 = json_data["users"][2]
     assert user3["name"] == "Test User 3"
@@ -126,6 +147,7 @@ def test_get_users_when_nonempty(populated_db_client):
     assert "password" not in user3.keys()
     assert user3["recipes"] == []
     assert user3["comments"] == [3, 5]
+    assert user3["joined_on"] == "2021-01-20"
 
 
 """

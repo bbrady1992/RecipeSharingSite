@@ -6,12 +6,12 @@ class Recipe(db.Model):
     name = db.Column(db.String(100), nullable=False, unique=True)
     prep_time_minutes = db.Column(db.Integer)
     cook_time_minutes = db.Column(db.Integer)
+    submitted_on = db.Column(db.Date, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'))
-    ingredients = db.relationship('Ingredient', secondary='RecipeIngredient')
-
     user = db.relationship('User')
     steps = db.relationship("RecipeStep", backref="Recipe", lazy="dynamic", cascade="all,delete")
     comments = db.relationship("Comment", backref="Recipe", lazy="dynamic", cascade="all,delete")
+    ingredients = db.relationship('Ingredient', secondary='RecipeIngredient')
 
     def __repr__(self):
         return '<Recipe %r>' % self.name

@@ -6,6 +6,7 @@ class User(db.Model):
     email = db.Column(db.String(35), unique=True, nullable=False)
     name = db.Column(db.String(25), unique=True, nullable=False)
     password = db.Column(db.String(64), nullable=False)
+    joined_on = db.Column(db.Date, nullable=False)
     recipes = db.relationship("Recipe", backref="User", lazy="dynamic")
     comments = db.relationship("Comment", backref="User", lazy="dynamic")
 
@@ -18,5 +19,6 @@ class User(db.Model):
             "name": self.name,
             "email": self.email,
             "recipes": [r.id for r in self.recipes],
-            "comments": [c.id for c in self.comments]
+            "comments": [c.id for c in self.comments],
+            "joined_on": self.joined_on.isoformat()
         }
