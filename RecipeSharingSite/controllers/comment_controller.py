@@ -13,13 +13,14 @@ class CommentController:
         if User.query.get(requested_user_id) is None:
             return None
 
-        results = Comment.query.filter_by(user_id = requested_user_id).all()
+        results = Comment.query.filter_by(user_id=requested_user_id).all()
 
         def unpack_comment(c):
             return {
                 "id": c.id,
                 "recipe_id": c.recipe_id,
-                "content": c.content
+                "content": c.content,
+                "submitted_on": c.submitted_on.isoformat()
             }
         comments = list(map(unpack_comment, results))
 

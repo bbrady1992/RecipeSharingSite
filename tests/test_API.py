@@ -68,9 +68,18 @@ def populated_db_client():
         RecipeIngredient(ingredient=Ingredient(name="Canned tomatoes"), amount=1, units="can"),
         RecipeIngredient(ingredient=Ingredient(name="Cumin powder"), amount=2, units="Tbsp")])
     recipe1.comments.extend([
-        Comment(user=user2, content="This is gross", submitted_on=datetime(2021, 1, 20, 12, 0, 0, 0, pytz.UTC)),
-        Comment(user=user1, content="That's just, like, your opinion, man", submitted_on=datetime(2021, 1, 21, 16, 15, 0, 0, pytz.UTC)),
-        Comment(user=user3, content="Simmer dean", submitted_on=datetime(2021, 1, 22, 5, 30, 0, 0, pytz.UTC))])
+        Comment(
+            user=user2,
+            content="This is gross",
+            submitted_on=datetime(2021, 1, 20, 12, 0, 0, 0, pytz.UTC)),
+        Comment(
+            user=user1,
+            content="That's just, like, your opinion, man",
+            submitted_on=datetime(2021, 1, 21, 16, 15, 0, 0, pytz.UTC)),
+        Comment(
+            user=user3,
+            content="Simmer dean",
+            submitted_on=datetime(2021, 1, 22, 5, 30, 0, 0, pytz.UTC))])
 
     """
     Recipe 2
@@ -92,9 +101,18 @@ def populated_db_client():
         RecipeIngredient(ingredient=Ingredient(name="Pepper"), amount=1.5, units="Tsp")
     ])
     recipe2.comments.extend([
-        Comment(user=user2, content="Now this is a meal", submitted_on=datetime(2021, 1, 24, 4, 30, 0, 0, pytz.UTC)),
-        Comment(user=user3, content="He might have you beat @user1", submitted_on=datetime(2021, 1, 24, 8, 45, 0, 0, pytz.UTC)),
-        Comment(user=user1, content="Okay, this IS better", submitted_on=datetime(2021, 1, 24, 19, 10, 0, 0, pytz.UTC))
+        Comment(
+            user=user2,
+            content="Now this is a meal",
+            submitted_on=datetime(2021, 1, 24, 4, 30, 0, 0, pytz.UTC)),
+        Comment(
+            user=user3,
+            content="He might have you beat @user1",
+            submitted_on=datetime(2021, 1, 24, 8, 45, 0, 0, pytz.UTC)),
+        Comment(
+            user=user1,
+            content="Okay, this IS better",
+            submitted_on=datetime(2021, 1, 24, 19, 10, 0, 0, pytz.UTC))
     ])
 
     with app.app_context():
@@ -202,10 +220,13 @@ def test_recipes_when_nonempty(populated_db_client):
     assert len(recipe1["comments"]) == 3
     assert recipe1["comments"][0]["user"] == "Test User 2"
     assert recipe1["comments"][0]["content"] == "This is gross"
+    assert recipe1["comments"][0]["submitted_on"] == "2021-01-20T12:00:00"
     assert recipe1["comments"][1]["user"] == "Test User 1"
     assert recipe1["comments"][1]["content"] == "That's just, like, your opinion, man"
+    assert recipe1["comments"][1]["submitted_on"] == "2021-01-21T16:15:00"
     assert recipe1["comments"][2]["user"] == "Test User 3"
     assert recipe1["comments"][2]["content"] == "Simmer dean"
+    assert recipe1["comments"][2]["submitted_on"] == "2021-01-22T05:30:00"
 
     """
     Recipe 2
@@ -240,10 +261,13 @@ def test_recipes_when_nonempty(populated_db_client):
     assert len(recipe2["comments"]) == 3
     assert recipe2["comments"][0]["user"] == "Test User 2"
     assert recipe2["comments"][0]["content"] == "Now this is a meal"
+    assert recipe2["comments"][0]["submitted_on"] == "2021-01-24T04:30:00"
     assert recipe2["comments"][1]["user"] == "Test User 3"
     assert recipe2["comments"][1]["content"] == "He might have you beat @user1"
+    assert recipe2["comments"][1]["submitted_on"] == "2021-01-24T08:45:00"
     assert recipe2["comments"][2]["user"] == "Test User 1"
     assert recipe2["comments"][2]["content"] == "Okay, this IS better"
+    assert recipe2["comments"][2]["submitted_on"] == "2021-01-24T19:10:00"
 
 
 
@@ -264,11 +288,13 @@ def test_get_comments_for_existing_user(populated_db_client):
     assert comment1["id"] == 3
     assert comment1["recipe_id"] == 1
     assert comment1["content"] == "Simmer dean"
+    assert comment1["submitted_on"] == "2021-01-22T05:30:00"
 
     comment2 = json_data["comments"][1]
     assert comment2["id"] == 5
     assert comment2["recipe_id"] == 2
     assert comment2["content"] == "He might have you beat @user1"
+    assert comment2["submitted_on"] == "2021-01-24T08:45:00"
 
 def test_get_comments_for_nonexistent_user(empty_db_client):
     rv = empty_db_client.get('/users/1/comments/')
