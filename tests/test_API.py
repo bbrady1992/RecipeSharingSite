@@ -42,9 +42,8 @@ def populated_db_client():
     recipe1.cook_time_minutes = 25
     recipe1.steps.append(RecipeStep(1, "Take out the ingredients"))
     recipe1.steps.append(RecipeStep(2, "Cook the ingredients"))
-    tomatoes = Ingredient("Tomatoes")
-    r1_ingredient1 = RecipeIngredient(tomatoes.id, 1, "can")
-    recipe1.ingredients.append(r1_ingredient1)
+    ingredient1 = Ingredient("Canned tomatoes")
+    recipe1_ingredient1 = RecipeIngredient(recipe=recipe1, ingredient=ingredient1, amount=1, units="can")
 
     recipe2 = Recipe()
     recipe2.user = user1
@@ -56,9 +55,8 @@ def populated_db_client():
 
     with app.app_context():
         db.session.add(user1)
-        db.session.add(tomatoes)
-        db.session.add(r1_ingredient1)
         db.session.add(recipe1)
+        db.session.add(recipe1_ingredient1)
         db.session.add(recipe2)
 
         db.session.commit()

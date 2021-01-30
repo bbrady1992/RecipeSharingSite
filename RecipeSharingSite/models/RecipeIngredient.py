@@ -8,14 +8,16 @@ class RecipeIngredient(db.Model):
     amount = db.Column(db.Float, nullable=False)
     units = db.Column(db.String)
 
-    recipe = db.relationship("Recipe", back_populates="ingredients")
-    ingredient = db.relationship("Ingredient", back_populates="recipes")
-
-    def __init__(self, ingredient_id, amount, units):
-        self.ingredient_id = ingredient_id
-        self.amount = amount
-        self.units = units
+    recipe = db.relationship('Recipe', backref=db.backref('ingredient_assoc'))
+    ingredient = db.relationship('Ingredient', backref=db.backref('recipe_assoc'))
 
 
     def __repr__(self):
         return '<RecipeIngredient %r-%r>' % self.recipe_id, self.ingredient_id
+
+    def serialize(self):
+        return {
+            "ingredient": self.ingredient.name,
+            "amount": self.amount,
+            "units": self.units
+        }
