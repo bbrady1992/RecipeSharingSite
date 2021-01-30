@@ -93,7 +93,7 @@ POST /users/
 ## Get comments made by user
 
 ```{js}
-GET /users/{user_id}/comments
+GET /users/{user_id}/comments/
 ```
 
 #### Parameters
@@ -122,9 +122,41 @@ Status: 200 OK
 }
 ```
 
-
+---
 
 ## Get recipes submitted by user
+
+```{js}
+GET /users/{user_id}/recipes/
+```
+
+#### Parameters
+
+| Name    | Type | In   | Description |
+|---------|------|------|-------------|
+| user_id | int  | path |             |
+
+#### Default Response
+
+```{js}
+Status: 200 OK
+```
+
+```{js}
+{
+   "user_id": 1,
+   "total_recipes": 1,
+   "recipes": [
+      {
+         "id": 1,
+         "name": "Test Recipe 1",
+         "submitted_on": "2021-01-20"
+      }
+   ]
+}
+```
+
+---
 
 
 # Recipes

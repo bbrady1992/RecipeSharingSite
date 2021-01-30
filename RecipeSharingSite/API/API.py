@@ -47,6 +47,13 @@ def get_comments_for_user(user_name):
         return "User {} not found".format(user_name), status.HTTP_404_NOT_FOUND
     return jsonify(results), status.HTTP_200_OK
 
+@API.route('/users/<user_name>/recipes/')
+def get_recipes_for_user(user_name):
+    results = RecipeController.get_recipes_for_user(user_name)
+    if results is None:
+        return "User {} not found".format(user_name), status.HTTP_404_NOT_FOUND
+    return jsonify(results), status.HTTP_200_OK
+
 
 """
 Recipes API

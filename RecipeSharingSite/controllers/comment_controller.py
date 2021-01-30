@@ -9,11 +9,12 @@ class CommentController:
     Map with comment data: requested user exists
     """
     @staticmethod
-    def get_comments_for_user(requested_user_id):
-        if User.query.get(requested_user_id) is None:
+    def get_comments_for_user(requested_user):
+        user = User.query.filter_by(name=requested_user).first()
+        if user is None:
             return None
 
-        results = Comment.query.filter_by(user_id=requested_user_id).all()
+        results = Comment.query.filter_by(user_id=user.id).all()
 
         def unpack_comment(c):
             return {
@@ -25,7 +26,7 @@ class CommentController:
         comments = list(map(unpack_comment, results))
 
         return {
-            "user_id": requested_user_id,
+            "user_id": user.id,
             "total_comments": len(comments),
             "comments": comments
         }

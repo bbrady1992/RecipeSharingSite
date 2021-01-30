@@ -36,17 +36,17 @@ def populated_db_client():
     app.config['TESTING'] = True
 
     user1 = User(
-        name="Test User 1",
+        name="TestUser1",
         email="testuser1@gmail.com",
         password="tu3passwordhash",
         joined_on=date(2000, 6, 23))
     user2 = User(
-        name="Test User 2",
+        name="TestUser2",
         email="TU2@gmail.com",
         password="tu2passwordhash",
         joined_on=date(1992, 10, 5))
     user3 = User(
-        name="Test User 3",
+        name="TestUser3",
         email="TestUser3@gmail.com",
         password="tu3passwordhash",
         joined_on=date(2021, 1, 20))
@@ -149,7 +149,7 @@ def test_get_users_when_nonempty(populated_db_client):
     assert len(json_data["users"]) == 3
 
     user1 = json_data["users"][0]
-    assert user1["name"] == "Test User 1"
+    assert user1["name"] == "TestUser1"
     assert user1["email"] == "testuser1@gmail.com"
     assert "password" not in user1.keys()
     assert user1["recipes"] == [1]
@@ -157,7 +157,7 @@ def test_get_users_when_nonempty(populated_db_client):
     assert user1["joined_on"] == "2000-06-23"
 
     user2 = json_data["users"][1]
-    assert user2["name"] == "Test User 2"
+    assert user2["name"] == "TestUser2"
     assert user2["email"] == "TU2@gmail.com"
     assert "password" not in user2.keys()
     assert user2["recipes"] == [2]
@@ -165,7 +165,7 @@ def test_get_users_when_nonempty(populated_db_client):
     assert user2["joined_on"] == "1992-10-05"
 
     user3 = json_data["users"][2]
-    assert user3["name"] == "Test User 3"
+    assert user3["name"] == "TestUser3"
     assert user3["email"] == "TestUser3@gmail.com"
     assert "password" not in user3.keys()
     assert user3["recipes"] == []
@@ -218,13 +218,13 @@ def test_recipes_when_nonempty(populated_db_client):
     assert recipe1["ingredients"][1]["units"] == "Tbsp"
 
     assert len(recipe1["comments"]) == 3
-    assert recipe1["comments"][0]["user"] == "Test User 2"
+    assert recipe1["comments"][0]["user"] == "TestUser2"
     assert recipe1["comments"][0]["content"] == "This is gross"
     assert recipe1["comments"][0]["submitted_on"] == "2021-01-20T12:00:00"
-    assert recipe1["comments"][1]["user"] == "Test User 1"
+    assert recipe1["comments"][1]["user"] == "TestUser1"
     assert recipe1["comments"][1]["content"] == "That's just, like, your opinion, man"
     assert recipe1["comments"][1]["submitted_on"] == "2021-01-21T16:15:00"
-    assert recipe1["comments"][2]["user"] == "Test User 3"
+    assert recipe1["comments"][2]["user"] == "TestUser3"
     assert recipe1["comments"][2]["content"] == "Simmer dean"
     assert recipe1["comments"][2]["submitted_on"] == "2021-01-22T05:30:00"
 
@@ -259,16 +259,32 @@ def test_recipes_when_nonempty(populated_db_client):
     assert recipe2["ingredients"][2]["units"] == "Tsp"
 
     assert len(recipe2["comments"]) == 3
-    assert recipe2["comments"][0]["user"] == "Test User 2"
+    assert recipe2["comments"][0]["user"] == "TestUser2"
     assert recipe2["comments"][0]["content"] == "Now this is a meal"
     assert recipe2["comments"][0]["submitted_on"] == "2021-01-24T04:30:00"
-    assert recipe2["comments"][1]["user"] == "Test User 3"
+    assert recipe2["comments"][1]["user"] == "TestUser3"
     assert recipe2["comments"][1]["content"] == "He might have you beat @user1"
     assert recipe2["comments"][1]["submitted_on"] == "2021-01-24T08:45:00"
-    assert recipe2["comments"][2]["user"] == "Test User 1"
+    assert recipe2["comments"][2]["user"] == "TestUser1"
     assert recipe2["comments"][2]["content"] == "Okay, this IS better"
     assert recipe2["comments"][2]["submitted_on"] == "2021-01-24T19:10:00"
 
+def test_get_recipes_for_nonexistent_user(empty_db_client):
+    rv = empty_db_client.get('/users/TestUser1/recipes/')
+    assert rv.status_code == 404
+    assert rv.get_data() == b"User TestUser1 not found"
+
+def test_get_recipes_for_existing_user(populated_db_client):
+    rv = populated_db_client.get('/users/TestUser1/recipes/')
+    assert rv.status_code == 200
+    json_data = rv.get_json()
+    assert len(json_data) == 3
+    assert json_data["user_id"] == 1
+    assert json_data["total_recipes"] == len(json_data["recipes"]) == 1
+    recipe1 = json_data["recipes"][0]
+    assert recipe1["id"] == 1
+    assert recipe1["name"] == "Test Recipe 1"
+    assert recipe1["submitted_on"] == "2021-01-20"
 
 
 """
@@ -276,12 +292,12 @@ Comments
 """
 
 def test_get_comments_for_existing_user(populated_db_client):
-    rv = populated_db_client.get('/users/3/comments/')
+    rv = populated_db_client.get('/users/TestUser3/comments/')
     assert rv.status_code == 200
     json_data = rv.get_json()
     print("test_get_comments_for_existing_user: {}".format(json_data))
     assert len(json_data) == 3
-    assert json_data["user_id"] == "3"
+    assert json_data["user_id"] == 3
     assert json_data["total_comments"] == len(json_data["comments"]) == 2
 
     comment1 = json_data["comments"][0]
@@ -297,7 +313,7 @@ def test_get_comments_for_existing_user(populated_db_client):
     assert comment2["submitted_on"] == "2021-01-24T08:45:00"
 
 def test_get_comments_for_nonexistent_user(empty_db_client):
-    rv = empty_db_client.get('/users/1/comments/')
+    rv = empty_db_client.get('/users/TestUser1/comments/')
     assert rv.status_code == 404
-    assert rv.get_data() == b"User 1 not found"
+    assert rv.get_data() == b"User TestUser1 not found"
 
