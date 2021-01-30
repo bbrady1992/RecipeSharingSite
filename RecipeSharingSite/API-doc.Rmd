@@ -1,0 +1,142 @@
+---
+title: "RecipeSharingSite API"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+---
+
+<style>
+pre {
+  max-height: 400px;
+  width: 910px;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+pre code {
+  word-wrap: normal;
+  white-space: pre;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width=200)
+options(height=400)
+```
+
+# Users
+
+## Get list of users
+
+```{js}
+GET /users/
+```
+
+
+#### Parameters
+
+None
+
+#### Default Response
+
+```{js}
+Status: 200 OK
+```
+
+```{js}
+{
+   "recipes":[
+      {
+         "comments":[
+            {
+               "content":"This is gross",
+               "id":1,
+               "user":"Test User 2"
+            },
+            {
+               "content":"That's just, like, your opinion, man",
+               "id":2,
+               "user":"Test User 1"
+            },
+            {
+               "content":"Simmer dean",
+               "id":3,
+               "user":"Test User 3"
+            }
+         ],
+         "cook_time_minutes":25,
+         "id":1,
+         "ingredients":[
+            {
+               "amount":1.0,
+               "ingredient":"Canned tomatoes",
+               "units":"can"
+            },
+            {
+               "amount":2.0,
+               "ingredient":"Cumin powder",
+               "units":"Tbsp"
+            }
+         ],
+         "name":"Test Recipe 1",
+         "prep_time_minutes":10,
+         "steps":[
+            {
+               "content":"Take out the ingredients",
+               "number":1
+            },
+            {
+               "content":"Cook the ingredients",
+               "number":2
+            },
+            {
+               "content":"Eat the meal",
+               "number":3
+            }
+         ],
+         "user_id":1
+      },
+   ]
+}
+```
+
+
+```
+Users:
+    * /users
+        * GET: Return list of all users
+        * POST:  Add user
+    * /users/{user_name}
+        * GET: Get information about specific user, including submitted recipes and comments ssssssssssssssssssssaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbb
+        * PUT: Update user information
+        * DELETE: Delete user
+
+
+Recipes:
+    * /recipes
+        * GET: List of all recipes
+        * POST: Add recipe
+    * /recipes/{recipe_id}
+        * GET: Get recipe
+        * PUT: Update recipe
+        * DELETE: Delete recipe
+
+
+Ingredients:
+    * /ingredients
+        * GET: Return list of all ingredients
+    * /ingredients/{ingredient_id}
+        * GET: List of recipe IDs that use ingredient
+
+
+Comments:
+    * /comment
+        * GET: Return list of all comments
+        * POST: Add comment (supply user ID and recipe ID)
+    * /comment/{comment_id}
+        * GET: Get comment
+        * PUT: Update comment
+        * DELETE: Delete comment
+```
