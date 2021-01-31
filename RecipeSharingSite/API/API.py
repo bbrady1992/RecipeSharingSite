@@ -120,6 +120,9 @@ def update_comment(comment_id):
     return endpoint_stub('/comments/<comment_id>', request.method, comment_id)
 
 
-@API.route('/comments/<comment_id>', methods=['DELETE'])
+@API.route('/comments/<comment_id>/', methods=['DELETE'])
 def delete_comment(comment_id):
-    return endpoint_stub('/comments/<comment_id>', request.method, comment_id)
+    comment_deleted = CommentController.delete_comment_with_id(comment_id)
+    if comment_deleted is None:
+        return "Comment {} not found".format(comment_id), status.HTTP_404_NOT_FOUND
+    return "", status.HTTP_204_NO_CONTENT

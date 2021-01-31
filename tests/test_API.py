@@ -303,12 +303,7 @@ def test_get_recipes_for_existing_user(populated_db_client):
     assert recipe1["name"] == "Test Recipe 1"
     assert recipe1["submitted_on"] == "2021-01-20"
 
-def test_get_nonexistent_recipe(empty_db_client):
-    rv = empty_db_client.get('/recipes/55/')
-    assert rv.status_code == 404
-    assert rv.get_data() == b"Recipe 55 not found"
-
-def test_get_existing_recipe(populated_db_client):
+def test_get_recipe(populated_db_client):
     rv = populated_db_client.get('/recipes/1/')
     assert rv.status_code == 200
     json_data = rv.get_json()
@@ -334,13 +329,17 @@ def test_get_existing_recipe(populated_db_client):
     assert json_data["steps"][2]["number"] == 3
     assert json_data["steps"][2]["content"] == "Eat the meal"
 
+    rv = populated_db_client.get('/recipes/55/')
+    assert rv.status_code == 404
+    assert rv.get_data() == b"Recipe 55 not found"
+
 
 
 """
 Comments
 """
 
-def test_get_comments_for_existing_user(populated_db_client):
+def test_get_comments_for_user(populated_db_client):
     rv = populated_db_client.get('/users/TestUser3/comments/')
     assert rv.status_code == 200
     json_data = rv.get_json()
@@ -361,9 +360,16 @@ def test_get_comments_for_existing_user(populated_db_client):
     assert comment2["content"] == "He might have you beat @user1"
     assert comment2["submitted_on"] == "2021-01-24T08:45:00"
 
-def test_get_comments_for_nonexistent_user(empty_db_client):
-    rv = empty_db_client.get('/users/TestUser1/comments/')
+    rv = populated_db_client.get('/users/nonexistentuser/comments/')
     assert rv.status_code == 404
-    assert rv.get_data() == b"User TestUser1 not found"
+    assert rv.get_data() == b"User nonexistentuser not found"
 
+def test_delete_comment(populated_db_client):
+    rv = populated_db_client.delete('/comments/1/')
+    assert rv.status_code == 204
+    assert rv.get_data() == b''
+
+    rv = populated_db_client.delete('/comments/55/')
+    assert rv.status_code == 404
+    assert rv.get_data() == b"Comment 55 not found"
 

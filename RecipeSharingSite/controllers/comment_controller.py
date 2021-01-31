@@ -1,5 +1,6 @@
 from RecipeSharingSite.models.comment import Comment
 from RecipeSharingSite.models.user import User
+from RecipeSharingSite import db
 
 
 class CommentController:
@@ -28,3 +29,14 @@ class CommentController:
             "total_comments": len(comments),
             "comments": comments
         }
+
+    @staticmethod
+    def delete_comment_with_id(comment_id):
+        comment = Comment.query.get(comment_id)
+        if comment is None:
+            return None
+        db.session.delete(comment)
+        db.session.commit()
+        return True
+
+
