@@ -13,15 +13,13 @@ class RecipeController:
         if user is None:
             return None
 
-        results = Recipe.query.filter_by(user_id=user.id).all()
-
         def unpack_recipe(r):
             return {
                 "id": r.id,
                 "name": r.name,
                 "submitted_on": r.submitted_on.isoformat()
             }
-        recipes = list(map(unpack_recipe, results))
+        recipes = list(map(unpack_recipe, user.recipes))
 
         return {
             "user_id": user.id,

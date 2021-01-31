@@ -14,8 +14,6 @@ class CommentController:
         if user is None:
             return None
 
-        results = Comment.query.filter_by(user_id=user.id).all()
-
         def unpack_comment(c):
             return {
                 "id": c.id,
@@ -23,7 +21,7 @@ class CommentController:
                 "content": c.content,
                 "submitted_on": c.submitted_on.isoformat()
             }
-        comments = list(map(unpack_comment, results))
+        comments = list(map(unpack_comment, user.comments))
 
         return {
             "user_id": user.id,

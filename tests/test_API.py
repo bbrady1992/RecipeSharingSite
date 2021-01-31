@@ -172,6 +172,23 @@ def test_get_users_when_nonempty(populated_db_client):
     assert user3["comments"] == [3, 5]
     assert user3["joined_on"] == "2021-01-20"
 
+def test_get_nonexistent_user(empty_db_client):
+    rv = empty_db_client.get('/users/nonexistentuser/')
+    assert rv.status_code == 404
+    assert rv.get_data() == b"User nonexistentuser not found"
+
+def test_get_existing_user(populated_db_client):
+    rv = populated_db_client.get('/users/TestUser1/')
+    assert rv.status_code == 200
+    json_data = rv.get_json()
+    assert len(json_data) == 6
+    assert json_data["user_id"] == 1
+    assert json_data["name"] == "TestUser1"
+    assert json_data["email"] == "testuser1@gmail.com"
+    assert json_data["joined_on"] == "2000-06-23"
+    assert json_data["recipes"] == [1]
+    assert json_data["comments"] == [2, 6]
+
 
 """
 GET /recipes/
@@ -316,4 +333,5 @@ def test_get_comments_for_nonexistent_user(empty_db_client):
     rv = empty_db_client.get('/users/TestUser1/comments/')
     assert rv.status_code == 404
     assert rv.get_data() == b"User TestUser1 not found"
+
 

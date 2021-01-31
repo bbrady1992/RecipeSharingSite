@@ -84,6 +84,42 @@ Status: 200 OK
 
 ---
 
+## Get information on user
+
+```{js}
+GET /users/{user_name}
+```
+
+#### Parameters
+
+| Name      | Type    | In   | Description |
+|-----------|---------|------|-------------|
+| user_name | string  | path |             |
+
+#### Default Response
+```{js}
+Status: 200 OK
+```
+
+```{js}
+{
+   "user_id": 1,
+   "name": "TestUser1",
+   "email": "testuser1@gmail.com",
+   "joined_on": "2000-06-23"
+   "recipes": [
+      1
+   ],
+   "comments": [
+      2,
+      6
+   ]
+}
+
+
+```
+---
+
 ## Add user
 
 ```{js}
@@ -93,14 +129,14 @@ POST /users/
 ## Get comments made by user
 
 ```{js}
-GET /users/{user_id}/comments/
+GET /users/{user_name}/comments/
 ```
 
 #### Parameters
 
-| Name    | Type | In   | Description |
-|---------|------|------|-------------|
-| user_id | int  | path |             |
+| Name      | Type    | In   | Description |
+|-----------|---------|------|-------------|
+| user_name | string  | path |             |
 
 #### Default Response
 
@@ -127,14 +163,14 @@ Status: 200 OK
 ## Get recipes submitted by user
 
 ```{js}
-GET /users/{user_id}/recipes/
+GET /users/{user_name}/recipes/
 ```
 
 #### Parameters
 
-| Name    | Type | In   | Description |
-|---------|------|------|-------------|
-| user_id | int  | path |             |
+| Name      | Type    | In   | Description |
+|-----------|---------|------|-------------|
+| user_name | string  | path |             |
 
 #### Default Response
 

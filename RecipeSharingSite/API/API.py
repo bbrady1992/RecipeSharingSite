@@ -28,7 +28,10 @@ def add_user():
 
 @API.route('/users/<user_name>/')
 def get_user_information(user_name):
-    return endpoint_stub('/users/<user_name>', request.method, user_name)
+    user_info = UserController.get_user_info_for(user_name)
+    if user_info is None:
+        return "User {} not found".format(user_name), status.HTTP_404_NOT_FOUND
+    return jsonify(user_info), status.HTTP_200_OK
 
 
 @API.route('/users/<user_name>/', methods=['PUT'])
