@@ -1632,18 +1632,11 @@ Status: 200 OK
 <hr />
 </div>
 </div>
-<div id="add-user" class="section level2">
-<h2>Add user</h2>
-<pre class="js"><code>POST /users/</code></pre>
+<div id="get-information-on-user" class="section level2">
+<h2>Get information on user</h2>
+<pre class="js"><code>GET /users/{user_name}</code></pre>
 <script type="text/javascript">
-POST /users/
-</script>
-</div>
-<div id="get-comments-made-by-user" class="section level2">
-<h2>Get comments made by user</h2>
-<pre class="js"><code>GET /users/{user_id}/comments/</code></pre>
-<script type="text/javascript">
-GET /users/{user_id}/comments/
+GET /users/{user_name}
 </script>
 <div id="parameters-1" class="section level4">
 <h4>Parameters</h4>
@@ -1658,8 +1651,8 @@ GET /users/{user_id}/comments/
 </thead>
 <tbody>
 <tr class="odd">
-<td>user_id</td>
-<td>int</td>
+<td>user_name</td>
+<td>string</td>
 <td>path</td>
 <td></td>
 </tr>
@@ -1667,6 +1660,80 @@ GET /users/{user_id}/comments/
 </table>
 </div>
 <div id="default-response-1" class="section level4">
+<h4>Default Response</h4>
+<pre class="js"><code>Status: 200 OK</code></pre>
+<script type="text/javascript">
+Status: 200 OK
+</script>
+<pre class="js"><code>{
+   &quot;user_id&quot;: 1,
+   &quot;name&quot;: &quot;TestUser1&quot;,
+   &quot;email&quot;: &quot;testuser1@gmail.com&quot;,
+   &quot;joined_on&quot;: &quot;2000-06-23&quot;
+   &quot;recipes&quot;: [
+      1
+   ],
+   &quot;comments&quot;: [
+      2,
+      6
+   ]
+}
+</code></pre>
+<script type="text/javascript">
+{
+   "user_id": 1,
+   "name": "TestUser1",
+   "email": "testuser1@gmail.com",
+   "joined_on": "2000-06-23"
+   "recipes": [
+      1
+   ],
+   "comments": [
+      2,
+      6
+   ]
+}
+
+
+</script>
+<hr />
+</div>
+</div>
+<div id="add-user" class="section level2">
+<h2>Add user</h2>
+<pre class="js"><code>POST /users/</code></pre>
+<script type="text/javascript">
+POST /users/
+</script>
+</div>
+<div id="get-comments-made-by-user" class="section level2">
+<h2>Get comments made by user</h2>
+<pre class="js"><code>GET /users/{user_name}/comments/</code></pre>
+<script type="text/javascript">
+GET /users/{user_name}/comments/
+</script>
+<div id="parameters-2" class="section level4">
+<h4>Parameters</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>In</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>user_name</td>
+<td>string</td>
+<td>path</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="default-response-2" class="section level4">
 <h4>Default Response</h4>
 <pre class="js"><code>Status: 200 OK</code></pre>
 <script type="text/javascript">
@@ -1701,11 +1768,11 @@ Status: 200 OK
 </div>
 <div id="get-recipes-submitted-by-user" class="section level2">
 <h2>Get recipes submitted by user</h2>
-<pre class="js"><code>GET /users/{user_id}/recipes/</code></pre>
+<pre class="js"><code>GET /users/{user_name}/recipes/</code></pre>
 <script type="text/javascript">
-GET /users/{user_id}/recipes/
+GET /users/{user_name}/recipes/
 </script>
-<div id="parameters-2" class="section level4">
+<div id="parameters-3" class="section level4">
 <h4>Parameters</h4>
 <table>
 <thead>
@@ -1718,15 +1785,15 @@ GET /users/{user_id}/recipes/
 </thead>
 <tbody>
 <tr class="odd">
-<td>user_id</td>
-<td>int</td>
+<td>user_name</td>
+<td>string</td>
 <td>path</td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="default-response-2" class="section level4">
+<div id="default-response-3" class="section level4">
 <h4>Default Response</h4>
 <pre class="js"><code>Status: 200 OK</code></pre>
 <script type="text/javascript">
@@ -1768,11 +1835,11 @@ Status: 200 OK
 <script type="text/javascript">
 GET /recipes/
 </script>
-<div id="parameters-3" class="section level4">
+<div id="parameters-4" class="section level4">
 <h4>Parameters</h4>
 <p>None</p>
 </div>
-<div id="default-response-3" class="section level4">
+<div id="default-response-4" class="section level4">
 <h4>Default Response</h4>
 <pre class="js"><code>Status: 200 OK</code></pre>
 <script type="text/javascript">
@@ -1888,6 +1955,112 @@ Status: 200 OK
    ]
 }
 </script>
+<hr />
+</div>
+</div>
+<div id="get-recipe-by-id" class="section level2">
+<h2>Get recipe by ID</h2>
+<pre class="js"><code>GET /recipe/{recipe_id}</code></pre>
+<script type="text/javascript">
+GET /recipe/{recipe_id}
+</script>
+<div id="parameters-5" class="section level4">
+<h4>Parameters</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>In</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>recipe_id</td>
+<td>int</td>
+<td>path</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="default-response-5" class="section level4">
+<h4>Default Response</h4>
+<pre class="js"><code>Status: 200 OK</code></pre>
+<script type="text/javascript">
+Status: 200 OK
+</script>
+<pre class="js"><code>{
+   &quot;id&quot;: 1,
+   &quot;name&quot;: &quot;Test Recipe 1&quot;,
+   &quot;submitted_on&quot;: &quot;2021-01-20&quot;,
+   &quot;prep_time_minutes&quot;: 10,
+   &quot;cook_time_minutes&quot;: 25,
+   &quot;user&quot;: &quot;TestUser1&quot;,
+   &quot;ingredients&quot;: [
+      {
+         &quot;ingredient&quot;: &quot;Canned tomatoes&quot;,
+         &quot;amount&quot;: 1,
+         &quot;units&quot;: &quot;can&quot;
+      },
+      {
+         &quot;ingredient&quot;: &quot;Cumin powder&quot;,
+         &quot;amount&quot;: 2,
+         &quot;units&quot;: &quot;Tbsp&quot;
+      }
+   ],
+   &quot;steps&quot;: [
+      {
+         &quot;number&quot;: 1,
+         &quot;content&quot;: &quot;Take out the ingredients&quot;
+      },
+      {
+         &quot;number&quot;: 2,
+         &quot;content&quot;: &quot;Cook the ingredients&quot;
+      }
+      {
+         &quot;number&quot;: 3,
+         &quot;content&quot;: &quot;Eat the meal&quot;
+      }
+   ]
+}</code></pre>
+<script type="text/javascript">
+{
+   "id": 1,
+   "name": "Test Recipe 1",
+   "submitted_on": "2021-01-20",
+   "prep_time_minutes": 10,
+   "cook_time_minutes": 25,
+   "user": "TestUser1",
+   "ingredients": [
+      {
+         "ingredient": "Canned tomatoes",
+         "amount": 1,
+         "units": "can"
+      },
+      {
+         "ingredient": "Cumin powder",
+         "amount": 2,
+         "units": "Tbsp"
+      }
+   ],
+   "steps": [
+      {
+         "number": 1,
+         "content": "Take out the ingredients"
+      },
+      {
+         "number": 2,
+         "content": "Cook the ingredients"
+      }
+      {
+         "number": 3,
+         "content": "Eat the meal"
+      }
+   ]
+}
+</script>
 </div>
 </div>
 </div>
@@ -1907,6 +2080,39 @@ Status: 200 OK
 </div>
 <div id="delete-comment" class="section level2">
 <h2>Delete comment</h2>
+<pre class="js"><code>DELETE /comments/{comment_id}</code></pre>
+<script type="text/javascript">
+DELETE /comments/{comment_id}
+</script>
+<div id="parameters-6" class="section level4">
+<h4>Parameters</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>In</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>comment_id</td>
+<td>int</td>
+<td>path</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="default-response-6" class="section level4">
+<h4>Default Response</h4>
+<pre class="js"><code>Status: 204 No Content</code></pre>
+<script type="text/javascript">
+Status: 204 No Content
+</script>
+<hr />
+</div>
 </div>
 <div id="get-comments-for-recipe" class="section level2">
 <h2>Get comments for recipe</h2>

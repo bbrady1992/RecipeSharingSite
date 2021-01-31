@@ -340,6 +340,24 @@ Status: 200 OK
 
 ## Delete comment
 
+```{js}
+DELETE /comments/{comment_id}
+```
+
+#### Parameters
+
+| Name       | Type | In   | Description |
+|------------|------|------|-------------|
+| comment_id | int  | path |             |
+
+#### Default Response
+
+```{js}
+Status: 204 No Content
+```
+
+---
+
 ## Get comments for recipe
 
 
