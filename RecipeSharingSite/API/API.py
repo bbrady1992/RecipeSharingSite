@@ -68,7 +68,10 @@ def get_all_recipes():
 
 @API.route('/recipes/<recipe_id>/')
 def get_recipe(recipe_id):
-    return endpoint_stub('/recipes/', request, recipe_id)
+    recipe = RecipeController.get_recipe(recipe_id)
+    if recipe is None:
+        return "Recipe {} not found".format(recipe_id), status.HTTP_404_NOT_FOUND
+    return jsonify(recipe), status.HTTP_200_OK
 
 
 @API.route('/recipes/<recipe_id>/', methods=['PUT'])

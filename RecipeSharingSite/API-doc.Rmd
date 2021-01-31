@@ -270,6 +270,63 @@ Status: 200 OK
 }
 ```
 
+---
+
+## Get recipe by ID
+
+```{js}
+GET /recipe/{recipe_id}
+```
+
+#### Parameters
+
+| Name      | Type | In   | Description |
+|-----------|------|------|-------------|
+| recipe_id | int  | path |             |
+
+#### Default Response
+
+```{js}
+Status: 200 OK
+```
+
+```{js}
+{
+   "id": 1,
+   "name": "Test Recipe 1",
+   "submitted_on": "2021-01-20",
+   "prep_time_minutes": 10,
+   "cook_time_minutes": 25,
+   "user": "TestUser1",
+   "ingredients": [
+      {
+         "ingredient": "Canned tomatoes",
+         "amount": 1,
+         "units": "can"
+      },
+      {
+         "ingredient": "Cumin powder",
+         "amount": 2,
+         "units": "Tbsp"
+      }
+   ],
+   "steps": [
+      {
+         "number": 1,
+         "content": "Take out the ingredients"
+      },
+      {
+         "number": 2,
+         "content": "Cook the ingredients"
+      }
+      {
+         "number": 3,
+         "content": "Eat the meal"
+      }
+   ]
+}
+```
+
 
 # Comments
 

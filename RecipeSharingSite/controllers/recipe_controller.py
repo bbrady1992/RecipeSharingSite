@@ -26,3 +26,21 @@ class RecipeController:
             "total_recipes": len(recipes),
             "recipes": recipes
         }
+
+
+    @staticmethod
+    def get_recipe(recipe_id):
+        recipe = Recipe.query.get(recipe_id)
+        if recipe is None:
+            return None
+
+        return {
+            "id": recipe.id,
+            "name": recipe.name,
+            "submitted_on": recipe.submitted_on.isoformat(),
+            "prep_time_minutes": recipe.prep_time_minutes,
+            "cook_time_minutes": recipe.cook_time_minutes,
+            "user": recipe.user.name,
+            "ingredients": [ri.serialize() for ri in recipe.ingredient_assoc],
+            "steps": [s.serialize() for s in recipe.steps]
+        }
