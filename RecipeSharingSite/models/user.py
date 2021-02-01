@@ -1,6 +1,7 @@
 from RecipeSharingSite import db
+from sqlalchemy_serializer import SerializerMixin
 
-class User(db.Model):
+class User(db.Model, SerializerMixin):
     __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(35), unique=True, nullable=False)
@@ -10,15 +11,14 @@ class User(db.Model):
     recipes = db.relationship("Recipe", backref="User", lazy="dynamic")
     comments = db.relationship("Comment", backref="User", lazy="dynamic")
 
+    serialize_only = (
+        'id',
+        'email',
+        'name',
+        'joined_on',
+        'recipes.id',
+        'comments.id'
+    )
+
     def __repr__(self):
         return '<User %r>' % self.name
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "email": self.email,
-            "recipes": [r.id for r in self.recipes],
-            "comments": [c.id for c in self.comments],
-            "joined_on": self.joined_on.isoformat()
-        }

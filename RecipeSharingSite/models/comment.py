@@ -1,7 +1,8 @@
 from RecipeSharingSite import db
+from sqlalchemy_serializer import SerializerMixin
 
 
-class Comment(db.Model):
+class Comment(db.Model, SerializerMixin):
     __tablename__ = 'Comment'
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String, nullable=False)
@@ -15,14 +16,14 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'))
     user = db.relationship('User')
 
+    serialize_only = (
+        'id',
+        'content',
+        'submitted_on',
+        'recipe_id',
+        'user_id'
+    )
+
     def __repr__(self):
         return '<Comment %r>' % self.id
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "content": self.content,
-            "recipe_id": self.recipe_id,
-            "user_id": self.user_id
-        }
 

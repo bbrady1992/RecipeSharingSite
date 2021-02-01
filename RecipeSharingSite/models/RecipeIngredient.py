@@ -1,6 +1,7 @@
 from RecipeSharingSite import db
+from sqlalchemy_serializer import SerializerMixin
 
-class RecipeIngredient(db.Model):
+class RecipeIngredient(db.Model, SerializerMixin):
     __tablename__ = 'RecipeIngredient'
 
     recipe_id = db.Column(db.Integer, db.ForeignKey('Recipe.id'), primary_key=True)
@@ -8,16 +9,15 @@ class RecipeIngredient(db.Model):
     amount = db.Column(db.Float, nullable=False)
     units = db.Column(db.String)
 
-    recipe = db.relationship('Recipe', backref=db.backref('ingredient_assoc'))
+    recipe = db.relationship('Recipe', backref=db.backref('ingredients'))
     ingredient = db.relationship('Ingredient', backref=db.backref('recipe_assoc'))
 
+    serialize_only = (
+        'ingredient.name',
+        'amount',
+        'units'
+    )
 
     def __repr__(self):
-        return '<RecipeIngredient %r-%r>' % self.recipe_id, self.ingredient_id
+        return '<RecipeIngredient %r-%r>' % (self.recipe_id, self.ingredient_id)
 
-    def serialize(self):
-        return {
-            "ingredient": self.ingredient.name,
-            "amount": self.amount,
-            "units": self.units
-        }

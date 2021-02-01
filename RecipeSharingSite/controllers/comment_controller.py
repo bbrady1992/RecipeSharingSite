@@ -15,20 +15,7 @@ class CommentController:
         if user is None:
             return None
 
-        def unpack_comment(c):
-            return {
-                "id": c.id,
-                "recipe_id": c.recipe_id,
-                "content": c.content,
-                "submitted_on": c.submitted_on.isoformat()
-            }
-        comments = list(map(unpack_comment, user.comments))
-
-        return {
-            "user_id": user.id,
-            "total_comments": len(comments),
-            "comments": comments
-        }
+        return {"comments": [c.to_dict() for c in user.comments]}
 
     @staticmethod
     def delete_comment_with_id(comment_id):

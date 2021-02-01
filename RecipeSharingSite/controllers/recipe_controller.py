@@ -5,7 +5,7 @@ from RecipeSharingSite.models.user import User
 class RecipeController:
     @staticmethod
     def get_all_recipes():
-        return {"recipes": [r.serialize() for r in Recipe.query.all()]}
+        return {"recipes": [r.to_dict() for r in Recipe.query.all()]}
 
     @staticmethod
     def get_recipes_for_user(requested_user):
@@ -13,20 +13,7 @@ class RecipeController:
         if user is None:
             return None
 
-        def unpack_recipe(r):
-            return {
-                "id": r.id,
-                "name": r.name,
-                "submitted_on": r.submitted_on.isoformat()
-            }
-        recipes = list(map(unpack_recipe, user.recipes))
-
-        return {
-            "user_id": user.id,
-            "total_recipes": len(recipes),
-            "recipes": recipes
-        }
-
+        return {"recipes": [r.to_dict() for r in user.recipes]}
 
     @staticmethod
     def get_recipe(recipe_id):
@@ -34,13 +21,4 @@ class RecipeController:
         if recipe is None:
             return None
 
-        return {
-            "id": recipe.id,
-            "name": recipe.name,
-            "submitted_on": recipe.submitted_on.isoformat(),
-            "prep_time_minutes": recipe.prep_time_minutes,
-            "cook_time_minutes": recipe.cook_time_minutes,
-            "user": recipe.user.name,
-            "ingredients": [ri.serialize() for ri in recipe.ingredient_assoc],
-            "steps": [s.serialize() for s in recipe.steps]
-        }
+        return recipe.to_dict()

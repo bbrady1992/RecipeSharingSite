@@ -1,6 +1,7 @@
 from RecipeSharingSite import db
+from sqlalchemy_serializer import SerializerMixin
 
-class Recipe(db.Model):
+class Recipe(db.Model, SerializerMixin):
     __tablename__ = 'Recipe'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
@@ -11,27 +12,22 @@ class Recipe(db.Model):
     user = db.relationship('User')
     steps = db.relationship("RecipeStep", backref="Recipe", lazy="dynamic", cascade="all,delete")
     comments = db.relationship("Comment", backref="Recipe", lazy="dynamic", cascade="all,delete")
-    ingredients = db.relationship('Ingredient', secondary='RecipeIngredient')
+    ingredients_raw = db.relationship('Ingredient', secondary='RecipeIngredient')
+
+    serialize_only = (
+        'id',
+        'name',
+        'prep_time_minutes',
+        'cook_time_minutes',
+        'submitted_on',
+        'user_id',
+        'steps',
+        'comments.id',
+        'ingredients')
+
+
 
     def __repr__(self):
         return '<Recipe %r>' % self.name
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "prep_time_minutes": self.prep_time_minutes,
-            "cook_time_minutes": self.cook_time_minutes,
-            "user_id": self.user_id,
-            "ingredients": [ri.serialize() for ri in self.ingredient_assoc],
-            "steps": [s.serialize() for s in self.steps],
-            "comments": [{
-                "id": c.id,
-                "user": c.user.name,
-                "content": c.content,
-                "submitted_on": c.submitted_on.isoformat()
-            } for c in self.comments],
-            "submitted_on": self.submitted_on.isoformat()
-        }
 
 
