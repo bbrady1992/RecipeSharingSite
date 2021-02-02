@@ -17,7 +17,6 @@ def add_user():
         return 'name' in keys and 'email' in keys and 'password' in keys
 
     json_data = request.get_json()
-    print("In /users/ POST with the following json - '{}'".format(json_data))
     if not user_data_is_valid(json_data):
         return '', status.HTTP_400_BAD_REQUEST
     added_user = UserController.add_user(json_data['name'], json_data['email'], json_data['password'])
@@ -30,22 +29,28 @@ def add_user():
 def get_user_information(user_id):
     user = UserController.get_user_info_for(user_id)
     if user is None:
-        return "User with ID {} not found".format(user_id), status.HTTP_404_NOT_FOUND
+        return 'User with ID {} not found'.format(user_id), status.HTTP_404_NOT_FOUND
     return jsonify(user), status.HTTP_200_OK
 
 
 @user_API.route('/users/<user_id>', methods=['PUT'])
 def update_user_information(user_id):
-    return "", status.HTTP_501_NOT_IMPLEMENTED
+    return '', status.HTTP_501_NOT_IMPLEMENTED
 
 
 @user_API.route('/users/<user_id>', methods=['DELETE'])
 def delete_user(user_id):
-    return "", status.HTTP_501_NOT_IMPLEMENTED
+    if not UserController.user_exists(user_id):
+        return 'User with ID {} not found'.format(user_id), status.HTTP_404_NOT_FOUND
+
+    if UserController.delete_user(user_id):
+        return '', status.HTTP_204_NO_CONTENT
+    else:
+        return 'Unable to delete user from database at this time', status.HTTP_503_SERVICE_UNAVAILABLE
 
 
 @user_API.route('/users/<user_id>/comments')
 def get_comments_made_by_user(user_id):
-    return "", status.HTTP_501_NOT_IMPLEMENTED
+    return '', status.HTTP_501_NOT_IMPLEMENTED
 
 

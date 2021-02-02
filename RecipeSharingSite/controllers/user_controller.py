@@ -9,6 +9,10 @@ class UserController:
     def get_all_users():
         return {"users": [u.to_dict() for u in User.query.all()]}
 
+    """
+    Returns a dictionary of user data if the user exists
+    Returns none if the user does not exist 
+    """
     @staticmethod
     def get_user_info_for(user_id):
         user = User.query.get(user_id)
@@ -17,6 +21,10 @@ class UserController:
         return user.to_dict()
 
 
+    """
+    Returns None is the user couldn't be added (an exception occurred)
+    Returns a dictionary of the new User data if add succeeded
+    """
     @staticmethod
     def add_user(name, email, password):
         new_user = User(
@@ -30,10 +38,31 @@ class UserController:
             db.session.commit()
             return User.query.filter_by(name=name).first().to_dict()
         except Exception as e:
-            print("Exception while adding user: '{}'".format(str(e)))
-
             db.session.rollback()
             db.session.flush()
             return None
+
+
+    """
+    Assumes user exists
+    Returns True if user deleted
+    Returns False is user couldn't be deleted (Exception occurred)
+    """
+    @staticmethod
+    def delete_user(user_id):
+        user = User.query.get(user_id)
+        db.session.delete(user)
+        try:
+            db.session.commit()
+            return True
+        except Exception as e:
+            db.session.rollback()
+            db.session.flush()
+            return False
+
+
+    @staticmethod
+    def user_exists(user_id):
+        return True if User.query.get(user_id) is not None else False
 
 
