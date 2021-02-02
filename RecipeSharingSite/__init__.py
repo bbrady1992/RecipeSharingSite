@@ -26,7 +26,11 @@ def create_app(database_uri = None):
     with app.app_context():
         db.create_all()
 
-    from RecipeSharingSite.API.API import API as API_BP
-    app.register_blueprint(API_BP)
+    from RecipeSharingSite.API.recipe_api import recipe_API
+    from RecipeSharingSite.API.comment_api import comment_API
+    from RecipeSharingSite.API.user_api import user_API
+    app.register_blueprint(recipe_API)
+    app.register_blueprint(comment_API)
+    app.register_blueprint(user_API)
 
     return app
