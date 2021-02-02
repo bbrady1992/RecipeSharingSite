@@ -29,12 +29,17 @@ def update_recipe(recipe_id):
     return "", status.HTTP_501_NOT_IMPLEMENTED
 
 
-@recipe_API.route('/recipes/<recipes_id>', methods=['DELETE'])
+@recipe_API.route('/recipes/<recipe_id>', methods=['DELETE'])
 def delete_recipe(recipe_id):
     return "", status.HTTP_501_NOT_IMPLEMENTED
 
 
 @recipe_API.route('/recipes/<user_id>/')
 def get_recipes_submitted_by(user_id):
+    return "", status.HTTP_501_NOT_IMPLEMENTED
+
+
+@recipe_API.route('/recipes/<recipe_id>/comments')
+def get_comments_for_recipe(recipe_id):
     return "", status.HTTP_501_NOT_IMPLEMENTED
 

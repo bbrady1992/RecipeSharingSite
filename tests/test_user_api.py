@@ -1,14 +1,18 @@
 from . import empty_db_client, populated_db_client
+from datetime import date
 
 def test_get_users_when_empty(empty_db_client):
     rv = empty_db_client.get('/users')
+    assert rv.status_code == 308
+
+    rv = empty_db_client.get('/users/')
     assert rv.status_code == 200
     json_data = rv.get_json()
     assert len(json_data) == 1
     assert json_data['users'] == []
 
 def test_get_users_when_nonempty(populated_db_client):
-    rv = populated_db_client.get('/users')
+    rv = populated_db_client.get('/users/')
     assert rv.status_code == 200
     json_data = rv.get_json()
 
@@ -42,6 +46,7 @@ def test_get_users_when_nonempty(populated_db_client):
     assert user3['comments'] == [{'id': 3}, {'id': 5}]
     assert user3['joined_on'] == '2021-01-20'
 
+
 def test_get_user_information(populated_db_client):
     # Test getting a nonexistent user
     rv = populated_db_client.get('/users/100')
@@ -55,9 +60,35 @@ def test_get_user_information(populated_db_client):
     assert json_data['id'] == 1
     assert json_data['email'] == 'testuser1@gmail.com'
     assert json_data['name'] == 'TestUser1'
+    assert 'password' not in json_data.keys()
     assert json_data['joined_on'] == '2000-06-23'
     assert json_data['recipes'] == [{'id': 1}]
     assert json_data['comments'] == [{'id': 2}, {'id': 6}]
+
+
+def test_add_user(empty_db_client):
+    rv = empty_db_client.post('/users/', json={
+        'name': 'AddedDuringTest',
+        'email': 'addedduringtest-55@yahoo.com',
+        'password': 'NewUserPassword!@#'
+    })
+    assert rv.status_code == 201
+
+    json_data = rv.get_json()
+    assert json_data['id'] == 1
+    assert json_data['email'] == 'addedduringtest-55@yahoo.com'
+    assert json_data['name'] == 'AddedDuringTest'
+    assert 'password' not in json_data.keys()
+    assert json_data['recipes'] == []
+    assert json_data['comments'] == []
+    assert json_data['joined_on'] == date.today().isoformat()
+
+
+    rv = empty_db_client.post('/users/', json={
+        'name': 'laksnf',
+        'email': 'a2n49sk@@5-+@net.net'
+    })
+    assert rv.status_code == 400
 
 
 

@@ -34,17 +34,17 @@ def populated_db_client():
     user1 = User(
         name="TestUser1",
         email="testuser1@gmail.com",
-        password="tu3passwordhash",
+        password="tu3password",
         joined_on=date(2000, 6, 23))
     user2 = User(
         name="TestUser2",
         email="TU2@gmail.com",
-        password="tu2passwordhash",
+        password="tu2password",
         joined_on=date(1992, 10, 5))
     user3 = User(
         name="TestUser3",
         email="TestUser3@gmail.com",
-        password="tu3passwordhash",
+        password="tu3password",
         joined_on=date(2021, 1, 20))
 
     """
