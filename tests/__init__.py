@@ -60,7 +60,7 @@ def populated_db_client():
         RecipeStep(number=1, content="Take out the ingredients"),
         RecipeStep(number=2, content="Cook the ingredients"),
         RecipeStep(number=3, content="Eat the meal")])
-    recipe1.ingredient_assoc.extend([
+    recipe1.ingredients.extend([
         RecipeIngredient(ingredient=Ingredient(name="Canned tomatoes"), amount=1, units="can"),
         RecipeIngredient(ingredient=Ingredient(name="Cumin powder"), amount=2, units="Tbsp")])
     recipe1.comments.extend([
@@ -91,7 +91,7 @@ def populated_db_client():
         RecipeStep(number=2, content="Season meat"),
         RecipeStep(number=3, content="Cook meat"),
         RecipeStep(number=4, content="Let sit for 5 minutes, then serve")])
-    recipe2.ingredient_assoc.extend([
+    recipe2.ingredients.extend([
         RecipeIngredient(ingredient=Ingredient(name="Ribeye"), amount=14, units="oz"),
         RecipeIngredient(ingredient=Ingredient(name="Salt"), amount=1, units="Tsp"),
         RecipeIngredient(ingredient=Ingredient(name="Pepper"), amount=1.5, units="Tsp")

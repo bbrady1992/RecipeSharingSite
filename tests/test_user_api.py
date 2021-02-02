@@ -1,0 +1,64 @@
+from . import empty_db_client, populated_db_client
+
+def test_get_users_when_empty(empty_db_client):
+    rv = empty_db_client.get('/users')
+    assert rv.status_code == 200
+    json_data = rv.get_json()
+    assert len(json_data) == 1
+    assert json_data['users'] == []
+
+def test_get_users_when_nonempty(populated_db_client):
+    rv = populated_db_client.get('/users')
+    assert rv.status_code == 200
+    json_data = rv.get_json()
+
+    assert len(json_data) == 1
+    assert len(json_data['users']) == 3
+
+    user1 = json_data['users'][0]
+    assert user1['id'] == 1
+    assert user1['name'] == 'TestUser1'
+    assert user1['email'] == 'testuser1@gmail.com'
+    assert 'password' not in user1.keys()
+    assert user1['recipes'] == [{'id': 1}]
+    assert user1['comments'] == [{'id': 2}, {'id': 6}]
+    assert user1['joined_on'] == '2000-06-23'
+
+    user2 = json_data['users'][1]
+    assert user2['id'] == 2
+    assert user2['name'] == 'TestUser2'
+    assert user2['email'] == 'TU2@gmail.com'
+    assert 'password' not in user2.keys()
+    assert user2['recipes'] == [{'id': 2}]
+    assert user2['comments'] == [{'id': 1}, {'id': 4}]
+    assert user2['joined_on'] == '1992-10-05'
+
+    user3 = json_data['users'][2]
+    assert user3['id'] == 3
+    assert user3['name'] == 'TestUser3'
+    assert user3['email'] == 'TestUser3@gmail.com'
+    assert 'password' not in user3.keys()
+    assert user3['recipes'] == []
+    assert user3['comments'] == [{'id': 3}, {'id': 5}]
+    assert user3['joined_on'] == '2021-01-20'
+
+def test_get_user_information(populated_db_client):
+    # Test getting a nonexistent user
+    rv = populated_db_client.get('/users/100')
+    assert rv.status_code == 404
+    assert rv.get_data() == b'User with ID 100 not found'
+
+    rv = populated_db_client.get('/users/1')
+    assert rv.status_code == 200
+    json_data = rv.get_json()
+    assert len(json_data) == 6
+    assert json_data['id'] == 1
+    assert json_data['email'] == 'testuser1@gmail.com'
+    assert json_data['name'] == 'TestUser1'
+    assert json_data['joined_on'] == '2000-06-23'
+    assert json_data['recipes'] == [{'id': 1}]
+    assert json_data['comments'] == [{'id': 2}, {'id': 6}]
+
+
+
+
