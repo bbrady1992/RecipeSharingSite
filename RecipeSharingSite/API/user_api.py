@@ -51,6 +51,8 @@ def delete_user(user_id):
 
 @user_API.route('/users/<user_id>/comments')
 def get_comments_made_by_user(user_id):
-    return '', status.HTTP_501_NOT_IMPLEMENTED
+    if not UserController.user_exists(user_id):
+        return 'User with ID {} not found'.format(user_id), status.HTTP_404_NOT_FOUND
+    return jsonify(UserController.get_comments_made_by_user(user_id)), status.HTTP_200_OK
 
 

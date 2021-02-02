@@ -23,6 +23,7 @@ class Comment(db.Model, SerializerMixin):
         'recipe_id',
         'user_id'
     )
+    datetime_format = '%Y-%m-%dT%H:%M:%SZ'
 
     def __repr__(self):
         return '<Comment %r>' % self.id

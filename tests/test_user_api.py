@@ -99,3 +99,31 @@ def test_delete_user(populated_db_client):
     rv = populated_db_client.delete('/users/1')
     assert rv.status_code == 204
     assert rv.get_data() == b''
+
+
+def test_get_comments_made_by_user(populated_db_client):
+    rv = populated_db_client.get('/users/555/comments')
+    assert rv.status_code == 404
+    assert rv.get_data() == b'User with ID 555 not found'
+
+    rv = populated_db_client.get('/users/3/comments')
+    assert rv.status_code == 200
+    json_data = rv.get_json()
+    assert len(json_data) == 1
+    assert len(json_data['comments']) == 2
+
+    comment1 = json_data['comments'][0]
+    assert comment1['id'] == 3
+    assert comment1['user_id'] == 3
+    assert comment1['recipe_id'] == 1
+    assert comment1['content'] == 'Simmer dean'
+    assert comment1['submitted_on'] == '2021-01-22T05:30:00Z'
+
+    comment2 = json_data['comments'][1]
+    assert comment2['id'] == 5
+    assert comment2['user_id'] == 3
+    assert comment2['recipe_id'] == 2
+    assert comment2['content'] == 'He might have you beat @user1'
+    assert comment2['submitted_on'] == '2021-01-24T08:45:00Z'
+
+

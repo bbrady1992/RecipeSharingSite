@@ -61,6 +61,17 @@ class UserController:
             return False
 
 
+    """
+    Assumes user exists
+    Returns dictionary containing comment data for user
+    """
+    @staticmethod
+    def get_comments_made_by_user(user_id):
+        user = User.query.get(user_id)
+        return {"comments": [c.to_dict() for c in user.comments]}
+
+
+
     @staticmethod
     def user_exists(user_id):
         return True if User.query.get(user_id) is not None else False
