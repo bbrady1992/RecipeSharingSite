@@ -1,5 +1,6 @@
 from RecipeSharingSite.models.recipe import Recipe
 from RecipeSharingSite.models.user import User
+from RecipeSharingSite import db
 
 
 class RecipeController:
@@ -22,3 +23,21 @@ class RecipeController:
             return None
 
         return recipe.to_dict()
+
+
+    @staticmethod
+    def delete_recipe(recipe_id):
+        recipe = Recipe.query.get(recipe_id)
+        db.session.delete(recipe)
+        try:
+            db.session.commit()
+            return True
+        except Exception as e:
+            print("Exception string = '{}'".format(str(e)))
+            db.session.rollback()
+            db.session.flush()
+            return False
+
+    @staticmethod
+    def recipe_exists(recipe_id):
+        return True if Recipe.query.get(recipe_id) is not None else False

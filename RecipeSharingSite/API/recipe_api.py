@@ -15,7 +15,7 @@ def get_all_recipe_ids():
 def get_recipe(recipe_id):
     recipe = RecipeController.get_recipe(recipe_id)
     if recipe is None:
-        return "Recipe {} not found".format(recipe_id), status.HTTP_404_NOT_FOUND
+        return "Recipe with ID {} not found".format(recipe_id), status.HTTP_404_NOT_FOUND
     return jsonify(recipe), status.HTTP_200_OK
 
 
@@ -31,12 +31,11 @@ def update_recipe(recipe_id):
 
 @recipe_API.route('/recipes/<recipe_id>', methods=['DELETE'])
 def delete_recipe(recipe_id):
-    return "", status.HTTP_501_NOT_IMPLEMENTED
-
-
-@recipe_API.route('/recipes/<user_id>')
-def get_recipes_submitted_by(user_id):
-    return "", status.HTTP_501_NOT_IMPLEMENTED
+    if not RecipeController.recipe_exists(recipe_id):
+        return 'Recipe with ID {} not found'.format(recipe_id), status.HTTP_404_NOT_FOUND
+    if not RecipeController.delete_recipe(recipe_id):
+        return 'Unable to delete recipe from database', status.HTTP_503_SERVICE_UNAVAILABLE
+    return '', status.HTTP_204_NO_CONTENT
 
 
 @recipe_API.route('/recipes/<recipe_id>/comments')

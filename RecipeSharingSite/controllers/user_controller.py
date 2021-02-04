@@ -2,7 +2,6 @@ from RecipeSharingSite.models.user import User
 from werkzeug.security import generate_password_hash
 from datetime import date
 from RecipeSharingSite import db
-from enum import Enum
 
 
 class UserController:
@@ -69,8 +68,13 @@ class UserController:
     @staticmethod
     def get_comments_made_by_user(user_id):
         user = User.query.get(user_id)
-        return {"comments": [c.to_dict() for c in user.comments]}
+        return {"comment_ids": [{'id': c.id} for c in user.comments]}
 
+
+    @staticmethod
+    def get_recipes_submitted_by_user(user_id):
+        user = User.query.get(user_id)
+        return {"recipe_ids": [{'id': r.id} for r in user.recipes]}
 
     """
     Assumes user exists
@@ -102,3 +106,5 @@ class UserController:
     @staticmethod
     def user_exists(user_id):
         return True if User.query.get(user_id) is not None else False
+
+

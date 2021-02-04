@@ -74,4 +74,10 @@ def get_comments_made_by_user(user_id):
         return 'User with ID {} not found'.format(user_id), status.HTTP_404_NOT_FOUND
     return jsonify(UserController.get_comments_made_by_user(user_id)), status.HTTP_200_OK
 
+@user_API.route('/users/<user_id>/recipes')
+def get_recipes_submitted_by_user(user_id):
+    if not UserController.user_exists(user_id):
+        return 'User with ID {} not found'.format(user_id), status.HTTP_404_NOT_FOUND
+    return jsonify(UserController.get_recipes_submitted_by_user(user_id)), status.HTTP_200_OK
+
 

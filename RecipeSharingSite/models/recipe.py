@@ -13,6 +13,7 @@ class Recipe(db.Model, SerializerMixin):
     steps = db.relationship("RecipeStep", backref="Recipe", lazy="dynamic", cascade="all,delete")
     comments = db.relationship("Comment", backref="Recipe", lazy="dynamic", cascade="all,delete")
     ingredients_raw = db.relationship('Ingredient', secondary='RecipeIngredient')
+    ingredients = db.relationship('RecipeIngredient', backref=db.backref('recipe'), cascade='all,delete',passive_deletes=True)
 
     serialize_only = (
         'id',

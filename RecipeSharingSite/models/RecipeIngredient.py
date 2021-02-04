@@ -9,7 +9,6 @@ class RecipeIngredient(db.Model, SerializerMixin):
     amount = db.Column(db.Float, nullable=False)
     units = db.Column(db.String)
 
-    recipe = db.relationship('Recipe', backref=db.backref('ingredients'))
     ingredient = db.relationship('Ingredient', backref=db.backref('recipe_assoc'))
 
     serialize_only = (
