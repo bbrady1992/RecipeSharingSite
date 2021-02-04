@@ -5,7 +5,7 @@ from RecipeSharingSite.models.user import User
 class RecipeController:
     @staticmethod
     def get_all_recipes():
-        return {"recipes": [r.to_dict() for r in Recipe.query.all()]}
+        return {"recipe_ids": [{'id': r.id} for r in Recipe.query.all()]}
 
     @staticmethod
     def get_recipes_for_user(requested_user):
