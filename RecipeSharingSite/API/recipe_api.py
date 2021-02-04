@@ -40,5 +40,7 @@ def delete_recipe(recipe_id):
 
 @recipe_API.route('/recipes/<recipe_id>/comments')
 def get_comments_for_recipe(recipe_id):
-    return "", status.HTTP_501_NOT_IMPLEMENTED
+    if not RecipeController.recipe_exists(recipe_id):
+        return 'Recipe with ID {} not found'.format(recipe_id), status.HTTP_404_NOT_FOUND
+    return jsonify(RecipeController.get_comments_for_recipe(recipe_id)), status.HTTP_200_OK
 

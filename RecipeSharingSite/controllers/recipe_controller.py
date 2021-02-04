@@ -33,7 +33,6 @@ class RecipeController:
             db.session.commit()
             return True
         except Exception as e:
-            print("Exception string = '{}'".format(str(e)))
             db.session.rollback()
             db.session.flush()
             return False
@@ -41,3 +40,8 @@ class RecipeController:
     @staticmethod
     def recipe_exists(recipe_id):
         return True if Recipe.query.get(recipe_id) is not None else False
+
+    @staticmethod
+    def get_comments_for_recipe(recipe_id):
+        recipe = Recipe.query.get(recipe_id)
+        return {'comment_ids': [{'id': c.id} for c in recipe.comments]}

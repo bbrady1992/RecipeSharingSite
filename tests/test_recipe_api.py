@@ -46,7 +46,21 @@ def test_get_recipe_by_id(populated_db_client):
 def test_delete_recipe(populated_db_client):
     rv = populated_db_client.delete('/recipes/555')
     assert rv.status_code == 404
+    assert rv.get_data() == b'Recipe with ID 555 not found'
 
     rv = populated_db_client.delete('/recipes/1')
     assert rv.status_code == 204
 
+
+def test_get_comments_for_recipe(populated_db_client):
+    rv = populated_db_client.get('/recipes/555/comments')
+    assert rv.status_code == 404
+    assert rv.get_data() == b'Recipe with ID 555 not found'
+
+    rv = populated_db_client.get('/recipes/1/comments')
+    assert rv.status_code == 200
+    assert rv.get_json() == {'comment_ids': [
+        {'id': 1},
+        {'id': 2},
+        {'id': 3}
+    ]}
