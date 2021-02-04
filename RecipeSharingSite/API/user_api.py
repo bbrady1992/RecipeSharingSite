@@ -35,6 +35,16 @@ def get_user_information(user_id):
 
 @user_API.route('/users/<user_id>', methods=['PUT'])
 def update_user_information(user_id):
+    def user_update_request_valid(request_data):
+        keys = request_data.keys()
+        return 'name' in keys or 'email' in keys
+
+    json_data = request.get_json()
+    if not user_update_request_valid(json_data):
+        return '', status.HTTP_400_BAD_REQUEST
+    updated_user = UserController.update_user_information(json_data.get('name'), json_data.get('email'))
+    if updated_user is None:
+
     return '', status.HTTP_501_NOT_IMPLEMENTED
 
 

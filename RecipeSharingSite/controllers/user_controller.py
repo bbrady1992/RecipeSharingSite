@@ -71,6 +71,15 @@ class UserController:
         return {"comments": [c.to_dict() for c in user.comments]}
 
 
+    """
+    Assumes user exists
+    """
+    @staticmethod
+    def update_user_information(user_id, name=None, email=None):
+
+
+
+
 
     @staticmethod
     def user_exists(user_id):

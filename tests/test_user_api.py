@@ -127,3 +127,12 @@ def test_get_comments_made_by_user(populated_db_client):
     assert comment2['submitted_on'] == '2021-01-24T08:45:00Z'
 
 
+def test_update_user_information(populated_db_client):
+    rv = populated_db_client.put('/users/555')
+    assert rv.status_code == 404
+    assert rv.get_data() == b'User with ID 555 not found'
+
+    json_data={"hello": "there"}
+    rv = populated_db_client.put('/users/1', json={
+        'name': 'newusernamefortu1'
+    })
