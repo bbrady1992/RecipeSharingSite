@@ -2,6 +2,7 @@ from RecipeSharingSite.models.user import User
 from werkzeug.security import generate_password_hash
 from datetime import date
 from RecipeSharingSite import db
+from enum import Enum
 
 
 class UserController:
@@ -73,9 +74,26 @@ class UserController:
 
     """
     Assumes user exists
+    Returns a tuple - second item is always the user information
+    First item is 'UPDATED' if an actual update took place, or 'NO_UPDATE'
+    if the requested update information matched what was already in the database
     """
     @staticmethod
     def update_user_information(user_id, name=None, email=None):
+        user = User.query.get(user_id)
+        info_updated = False
+        if name is not None and name != user.name:
+            user.name = name
+            info_updated = True
+        if email is not None and email != user.email:
+            user.email = email
+            info_updated = True
+
+        status = 'NO_UPDATE'
+        if info_updated:
+            db.session.commit()
+            status = 'UPDATED'
+        return status, user.to_dict()
 
 
 
@@ -84,5 +102,3 @@ class UserController:
     @staticmethod
     def user_exists(user_id):
         return True if User.query.get(user_id) is not None else False
-
-

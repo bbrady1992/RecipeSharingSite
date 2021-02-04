@@ -36,16 +36,25 @@ def get_user_information(user_id):
 @user_API.route('/users/<user_id>', methods=['PUT'])
 def update_user_information(user_id):
     def user_update_request_valid(request_data):
+        if request_data is None:
+            return False
         keys = request_data.keys()
         return 'name' in keys or 'email' in keys
 
     json_data = request.get_json()
     if not user_update_request_valid(json_data):
         return '', status.HTTP_400_BAD_REQUEST
-    updated_user = UserController.update_user_information(json_data.get('name'), json_data.get('email'))
-    if updated_user is None:
 
-    return '', status.HTTP_501_NOT_IMPLEMENTED
+    if not UserController.user_exists(user_id):
+        return 'User with ID {} not found'.format(user_id), status.HTTP_404_NOT_FOUND
+
+    update_status, updated_user = UserController.update_user_information(user_id, json_data.get('name'), json_data.get('email'))
+    if updated_user is None:
+        return 'Unable to update user information in database at this time', status.HTTP_503_SERVICE_UNAVAILABLE
+    elif update_status == 'NO_UPDATE':
+        return '', status.HTTP_204_NO_CONTENT
+    return jsonify(updated_user), status.HTTP_200_OK
+
 
 
 @user_API.route('/users/<user_id>', methods=['DELETE'])

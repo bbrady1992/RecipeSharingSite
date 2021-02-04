@@ -127,12 +127,53 @@ def test_get_comments_made_by_user(populated_db_client):
     assert comment2['submitted_on'] == '2021-01-24T08:45:00Z'
 
 
-def test_update_user_information(populated_db_client):
-    rv = populated_db_client.put('/users/555')
+def test_update_nonexistent_user(populated_db_client):
+    rv = populated_db_client.put('/users/555', json={
+        'name': 'noname',
+        'email': 'noemail@email.com'
+    })
     assert rv.status_code == 404
     assert rv.get_data() == b'User with ID 555 not found'
 
-    json_data={"hello": "there"}
+
+def test_update_fails_with_bad_request(populated_db_client):
+    rv = populated_db_client.put('/users/1')
+    assert rv.status_code == 400
+    assert rv.get_data() == b''
+
+
+def test_update_user_with_same_info_in_db(populated_db_client):
+    rv = populated_db_client.put('/users/1', json={
+        'name': 'TestUser1',
+        'email': 'testuser1@gmail.com'
+    })
+    assert rv.status_code == 204
+
+def test_update_user_name_only(populated_db_client):
     rv = populated_db_client.put('/users/1', json={
         'name': 'newusernamefortu1'
     })
+    assert rv.status_code == 200
+    json_data = rv.get_json()
+    assert json_data['name'] == 'newusernamefortu1'
+    assert json_data['email'] == 'testuser1@gmail.com'
+
+
+def test_update_user_email_only(populated_db_client):
+    rv = populated_db_client.put('/users/2', json={
+        'email': 'tu2email@gmail.com'
+    })
+    assert rv.status_code == 200
+    json_data = rv.get_json()
+    assert json_data['name'] == 'TestUser2'
+    assert json_data['email'] == 'tu2email@gmail.com'
+
+def test_update_all_user_info(populated_db_client):
+    rv = populated_db_client.put('/users/3', json={
+        'name': 'User3ForTesting',
+        'email': 'newuser3email@yahoo.com'
+    })
+    assert rv.status_code == 200
+    json_data = rv.get_json()
+    assert json_data['name'] == 'User3ForTesting'
+    assert json_data['email'] == 'newuser3email@yahoo.com'
