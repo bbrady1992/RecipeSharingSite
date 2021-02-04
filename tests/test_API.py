@@ -2,13 +2,6 @@ from . import empty_db_client, populated_db_client
 #"""
 #GET /recipes/
 #"""
-#def test_recipes_when_empty(empty_db_client):
-#    rv = empty_db_client.get('/recipes/')
-#    assert rv.status_code == 200
-#    json_data = rv.get_json()
-#    assert len(json_data) == 1
-#    assert json_data["recipes"] == []
-#
 #def test_recipes_when_nonempty(populated_db_client):
 #    rv = populated_db_client.get('/recipes/')
 #    assert rv.status_code == 200

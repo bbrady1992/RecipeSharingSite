@@ -21,7 +21,8 @@ class Recipe(db.Model, SerializerMixin):
         'cook_time_minutes',
         'submitted_on',
         'user_id',
-        'steps',
+        'steps.number',
+        'steps.content',
         'comments.id',
         'ingredients')
 
