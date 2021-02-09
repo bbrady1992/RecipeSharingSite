@@ -93,11 +93,9 @@ class UserController:
             user.email = email
             info_updated = True
 
-        status = 'NO_UPDATE'
         if info_updated:
             db.session.commit()
-            status = 'UPDATED'
-        return status, user.to_dict()
+        return info_updated, user.to_dict()
 
 
 

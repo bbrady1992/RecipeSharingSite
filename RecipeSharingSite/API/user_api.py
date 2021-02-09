@@ -48,10 +48,10 @@ def update_user_information(user_id):
     if not UserController.user_exists(user_id):
         return 'User with ID {} not found'.format(user_id), status.HTTP_404_NOT_FOUND
 
-    update_status, updated_user = UserController.update_user_information(user_id, json_data.get('name'), json_data.get('email'))
+    user_updated, updated_user = UserController.update_user_information(user_id, json_data.get('name'), json_data.get('email'))
     if updated_user is None:
         return 'Unable to update user information in database at this time', status.HTTP_503_SERVICE_UNAVAILABLE
-    elif update_status == 'NO_UPDATE':
+    elif not user_updated:
         return '', status.HTTP_204_NO_CONTENT
     return jsonify(updated_user), status.HTTP_200_OK
 

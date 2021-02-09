@@ -21,3 +21,21 @@ class CommentController:
         return True
 
 
+    @staticmethod
+    def comment_exists(comment_id):
+        return Comment.query.get(comment_id) is not None
+
+
+    @staticmethod
+    def update_comment_information(comment_id, new_content=None):
+        comment = Comment.query.get(comment_id)
+        comment_updated = False
+        if new_content is not None and new_content != comment.content:
+            comment.content = new_content
+            comment_updated = True
+        if comment_updated:
+            db.session.commit()
+        return comment_updated, comment.to_dict()
+
+
+

@@ -20,7 +20,24 @@ def post_comment_on_recipe(recipe_id):
 
 @comment_API.route('/comments/<comment_id>', methods=['PUT'])
 def update_comment(comment_id):
-    return "", status.HTTP_501_NOT_IMPLEMENTED
+    def comment_update_request_valid(request_data):
+        if request_data is None:
+            return False
+        return 'content' in request_data.keys()
+
+    json_data = request.get_json()
+    if not comment_update_request_valid(json_data):
+        return '', status.HTTP_400_BAD_REQUEST
+
+    if not CommentController.comment_exists(comment_id):
+        return f'Comment with ID {comment_id} not found', status.HTTP_404_NOT_FOUND
+
+    comment_updated, updated_comment = CommentController.update_comment_information(comment_id, json_data.get('content'))
+    if updated_comment is None:
+        return 'Unable to update comment information in database at this time', status.HTTP_503_SERVICE_UNAVAILABLE
+    elif not comment_updated:
+        return '', status.HTTP_204_NO_CONTENT
+    return jsonify(updated_comment), status.HTTP_200_OK
 
 
 @comment_API.route('/comments/<comment_id>', methods=['DELETE'])
