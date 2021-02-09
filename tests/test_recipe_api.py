@@ -43,6 +43,7 @@ def test_get_recipe_by_id(populated_db_client):
         {'number': 3, 'content': 'Eat the meal'}
     ]
 
+
 def test_delete_recipe(populated_db_client):
     rv = populated_db_client.delete('/recipes/555')
     assert rv.status_code == 404
@@ -64,3 +65,5 @@ def test_get_comments_for_recipe(populated_db_client):
         {'id': 2},
         {'id': 3}
     ]}
+
+
