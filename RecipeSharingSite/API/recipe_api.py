@@ -44,3 +44,11 @@ def get_comments_for_recipe(recipe_id):
         return 'Recipe with ID {} not found'.format(recipe_id), status.HTTP_404_NOT_FOUND
     return jsonify(RecipeController.get_comments_for_recipe(recipe_id)), status.HTTP_200_OK
 
+
+@recipe_API.route('/recipes/<recipe_id>/comments', methods=['POST'])
+def post_comment_on_recipe(recipe_id):
+    return '', status.HTTP_503_SERVICE_UNAVAILABLE
+    if not RecipeController.recipe_exists(recipe_id):
+        return f'Recipe with ID {recipe_id} not found', status.HTTP_404_NOT_FOUND
+
+

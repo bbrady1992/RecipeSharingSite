@@ -67,3 +67,23 @@ def test_get_comments_for_recipe(populated_db_client):
     ]}
 
 
+def test_post_comment_on_recipe(populated_db_client):
+    rv = populated_db_client.post('/recipes/555/comments')
+    assert rv.status_code == 404
+
+    rv = populated_db_client.post('/recipes/1/comments')
+    assert rv.status_code == 400
+
+    rv = populated_db_client.post('/recipes/1/comments', json={
+        'user_id': 3,
+        'content': 'New comment on recipe 1'
+    })
+    assert rv.status_code == 201
+    json_data = rv.get_json()
+    assert json_data['recipe_id'] == 1
+    assert json_data['user_id'] == 3
+    assert json_data['content'] == 'New comment on recipe 1'
+    assert json_data.get('submitted_on') is not None
+    assert json_data.get('id') is not None
+
+
