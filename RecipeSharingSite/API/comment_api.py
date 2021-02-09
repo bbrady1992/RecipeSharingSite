@@ -42,4 +42,10 @@ def update_comment(comment_id):
 
 @comment_API.route('/comments/<comment_id>', methods=['DELETE'])
 def delete_comment(comment_id):
-    return "", status.HTTP_501_NOT_IMPLEMENTED
+    if not CommentController.comment_exists(comment_id):
+        return f'Comment with ID {comment_id} not found', status.HTTP_404_NOT_FOUND
+
+    if CommentController.delete_comment(comment_id):
+        return '', status.HTTP_204_NO_CONTENT
+    else:
+        return 'Unable to delete comment from database at this time', status.HTTP_503_SERVICE_UNAVAILABLE

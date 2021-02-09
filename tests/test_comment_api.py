@@ -42,3 +42,12 @@ def test_update_comment(populated_db_client):
     })
     assert rv.status_code == 204
 
+
+def test_delete_comment(populated_db_client):
+    rv = populated_db_client.delete('/comments/555')
+    assert rv.status_code == 404
+    assert rv.get_data() == b'Comment with ID 555 not found'
+
+    rv = populated_db_client.delete('/comments/1')
+    assert rv.status_code == 204
+

@@ -37,5 +37,17 @@ class CommentController:
             db.session.commit()
         return comment_updated, comment.to_dict()
 
+    @staticmethod
+    def delete_comment(comment_id):
+        comment = Comment.query.get(comment_id)
+        db.session.delete(comment)
+        try:
+            db.session.commit()
+            return True
+        except Exception as e:
+            db.session.rollback()
+            db.session.flush()
+            return False
+
 
 
