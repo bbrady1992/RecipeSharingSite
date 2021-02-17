@@ -1,6 +1,9 @@
 from RecipeSharingSite.models.recipe import Recipe
 from RecipeSharingSite.models.user import User
+from RecipeSharingSite.models.comment import Comment
 from RecipeSharingSite import db
+from datetime import datetime
+import pytz
 
 
 class RecipeController:
@@ -38,3 +41,13 @@ class RecipeController:
     def get_comments_for_recipe(recipe_id):
         recipe = Recipe.query.get(recipe_id)
         return {'comment_ids': [{'id': c.id} for c in recipe.comments]}
+
+    @staticmethod
+    def post_comment_on_recipe(recipe_id, user_id, content):
+        recipe = Recipe.query.get(recipe_id)
+        user = User.query.get(user_id)
+        new_comment = Comment(user=user, content=content, submitted_on=datetime.now(pytz.UTC))
+        recipe.comments.extend([new_comment])
+        db.session.commit()
+        return new_comment.to_dict()
+

@@ -1,5 +1,4 @@
 from RecipeSharingSite.models.comment import Comment
-from RecipeSharingSite.models.user import User
 from RecipeSharingSite import db
 
 

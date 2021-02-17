@@ -47,8 +47,20 @@ def get_comments_for_recipe(recipe_id):
 
 @recipe_API.route('/recipes/<recipe_id>/comments', methods=['POST'])
 def post_comment_on_recipe(recipe_id):
-    return '', status.HTTP_503_SERVICE_UNAVAILABLE
+    def post_comment_request_valid(request_data):
+        if request_data is None:
+            return False
+        keys = request_data.keys()
+        return 'user_id' in keys and 'content' in keys
+
     if not RecipeController.recipe_exists(recipe_id):
         return f'Recipe with ID {recipe_id} not found', status.HTTP_404_NOT_FOUND
+    json_data = request.get_json()
+    if not post_comment_request_valid(json_data):
+        return '', status.HTTP_400_BAD_REQUEST
+
+    new_comment = RecipeController.post_comment_on_recipe(recipe_id, json_data.get('user_id'), json_data.get('content'))
+    return jsonify(new_comment), status.HTTP_201_CREATED
+
 
 
